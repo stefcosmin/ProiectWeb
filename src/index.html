@@ -4,26 +4,214 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Gestiune Inventar</title>
+    <title>Inventar Smart - Gestiune</title>
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="css/style.css">
 </head>
 
 <body>
-    <header>
-        <h1>Sistem Gestiune Articole</h1>
-    </header>
-
-    <main class="container">
-        <section id="notifications-panel" class="notifications">
-        </section>
-
-        <section class="inventory-section">
-            <h2>Articole Curente</h2>
-            <div id="inventory-list" class="grid-layout">
-                <p>Se încarcă datele...</p>
+    <div class="app-container">
+        <!-- Sidebar Navigation -->
+        <aside class="sidebar glass-panel">
+            <div class="brand">
+                <div class="logo"></div>
+                <h2>InvenSmart</h2>
             </div>
-        </section>
-    </main>
+            <nav class="main-nav">
+                <button class="nav-btn active" data-target="dashboard-view">
+                    <span class="icon">📊</span> Dashboard
+                </button>
+                <button class="nav-btn" data-target="items-view">
+                    <span class="icon">📦</span> Articole
+                </button>
+                <button class="nav-btn" data-target="categories-view">
+                    <span class="icon">🗂️</span> Categorii
+                </button>
+                <button class="nav-btn" data-target="export-view">
+                    <span class="icon">📤</span> Rapoarte
+                </button>
+            </nav>
+            <div class="trigger-notification">
+                <button id="trigger-email-btn" class="btn btn-outline">
+                    <span class="icon">📧</span> Trimite Alerte
+                </button>
+            </div>
+        </aside>
+
+        <!-- Main Content Area -->
+        <main class="main-content">
+            <!-- Top Header -->
+            <header class="top-header glass-panel">
+                <div class="page-title">
+                    <h1 id="current-page-title">Dashboard</h1>
+                </div>
+                <div class="user-actions">
+                    <div class="notification-bell" id="notification-bell">
+                        <span class="icon">🔔</span>
+                        <span class="badge" id="notification-badge">0</span>
+
+                        <div class="dropdown-panel glass-panel hidden" id="notification-dropdown">
+                            <h3>Notificări <span class="pulse"></span></h3>
+                            <div class="notif-list" id="notif-list">
+                                <!-- Notificari injectate prin JS -->
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </header>
+
+            <!-- Dashboard View -->
+            <section id="dashboard-view" class="view-section active">
+                <div class="stats-grid">
+                    <div class="stat-card glass-panel">
+                        <h3>Total Articole</h3>
+                        <div class="stat-value" id="stat-total-items">-</div>
+                    </div>
+                    <div class="stat-card glass-panel alert-stat">
+                        <h3>Stoc Critic</h3>
+                        <div class="stat-value" id="stat-critical-items">-</div>
+                    </div>
+                </div>
+                <div class="dashboard-widgets grid">
+                    <div class="widget glass-panel">
+                        <h2>Epuizări Iminente</h2>
+                        <ul class="clean-list" id="imminent-depletion-list">
+                            <li>Se încarcă...</li>
+                        </ul>
+                    </div>
+                    <div class="widget glass-panel">
+                        <h2>Verificări Necesare (30+ zile)</h2>
+                        <ul class="clean-list" id="periodic-check-list">
+                            <li>Se încarcă...</li>
+                        </ul>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Items View -->
+            <section id="items-view" class="view-section hidden">
+                <div class="view-header">
+                    <h2>Gestiune Articole și Consumabile</h2>
+                    <button class="btn btn-primary" id="add-item-btn">+ Adaugă Articol</button>
+                </div>
+                <div class="table-container glass-panel">
+                    <table class="data-table">
+                        <thead>
+                            <tr>
+                                <th>ID</th>
+                                <th>Nume Articol</th>
+                                <th>Categorie</th>
+                                <th>Cantitate</th>
+                                <th>Prag Minim</th>
+                                <th>Verificat la</th>
+                                <th>Acțiuni</th>
+                            </tr>
+                        </thead>
+                        <tbody id="items-table-body">
+                            <!-- Items via JS -->
+                        </tbody>
+                    </table>
+                </div>
+            </section>
+
+            <!-- Categories View -->
+            <section id="categories-view" class="view-section hidden">
+                <div class="view-header">
+                    <h2>Categorii Produse</h2>
+                    <button class="btn btn-primary" id="add-category-btn">+ Adaugă Categorie</button>
+                </div>
+                <div class="table-container glass-panel">
+                    <table class="data-table">
+                        <thead>
+                            <tr>
+                                <th>ID</th>
+                                <th>Nume Categorie</th>
+                                <th>Acțiuni</th>
+                            </tr>
+                        </thead>
+                        <tbody id="categories-table-body">
+                            <!-- Categories via JS -->
+                        </tbody>
+                    </table>
+                </div>
+            </section>
+
+            <!-- Export View -->
+            <section id="export-view" class="view-section hidden">
+                <div class="view-header">
+                    <h2>Rapoarte și Statistici</h2>
+                </div>
+                <div class="export-options grid">
+                    <div class="export-card glass-panel">
+                        <div class="icon-large">📊</div>
+                        <h3>Format JSON</h3>
+                        <p>Date structurate pentru integrare software.</p>
+                        <a href="/api/export/json" target="_blank" class="btn btn-outline">Descarcă JSON</a>
+                    </div>
+                    <div class="export-card glass-panel">
+                        <div class="icon-large">📑</div>
+                        <h3>Format CSV</h3>
+                        <p>Compatibil cu Excel și software de calcul tabelar.</p>
+                        <a href="/api/export/csv" target="_blank" class="btn btn-outline">Descarcă CSV</a>
+                    </div>
+                    <div class="export-card glass-panel">
+                        <div class="icon-large">📰</div>
+                        <h3>Format XML</h3>
+                        <p>Format extensibil pentru schimb de date.</p>
+                        <a href="/api/export/xml" target="_blank" class="btn btn-outline">Descarcă XML</a>
+                    </div>
+                    <div class="export-card glass-panel">
+                        <div class="icon-large">📄</div>
+                        <h3>Raport PDF / HTML</h3>
+                        <p>Raport formatat vizual pentru consultare.</p>
+                        <a href="/api/export/html" target="_blank" class="btn btn-primary">Generează Raport</a>
+                    </div>
+                </div>
+            </section>
+
+        </main>
+    </div>
+
+    <!-- Modals -->
+    <div class="modal-backdrop hidden" id="item-modal">
+        <div class="modal glass-panel">
+            <h2 id="item-modal-title">Adaugă Articol</h2>
+            <form id="item-form">
+                <input type="hidden" id="item-id">
+                <div class="form-group">
+                    <label>Nume Articol</label>
+                    <input type="text" id="item-name" required placeholder="Ex: Becuri LED">
+                </div>
+                <div class="form-group">
+                    <label>Categorie</label>
+                    <select id="item-category" required>
+                        <!-- Loaded via JS -->
+                    </select>
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>Cantitate</label>
+                        <input type="number" id="item-quantity" required min="0" placeholder="0">
+                    </div>
+                    <div class="form-group">
+                        <label>Prag Minim (Alertă)</label>
+                        <input type="number" id="item-min" required min="0" placeholder="5">
+                    </div>
+                </div>
+                <div class="form-actions">
+                    <button type="button" class="btn btn-outline close-modal">Anulează</button>
+                    <button type="submit" class="btn btn-primary">Salvează</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Toast Notifications -->
+    <div id="toast-container" class="toast-container"></div>
 
     <script src="js/app.js"></script>
 </body>
