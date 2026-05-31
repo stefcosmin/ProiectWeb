@@ -14,7 +14,7 @@ CREATE TABLE items (
 );
 
 -- Inserăm date de test pentru consumabile și piese 
-INSERT INTO categories (name) VALUES ('Consumabile'), ('Piese de schimb');
+INSERT INTO categories (name) VALUES ('Altele'), ('Consumabile'), ('Piese de schimb'), ('Unelte'), ('Chimicale'),('Echipamente'),('Materiale curatenie');
 INSERT INTO items (category_id, name, quantity, min_threshold) VALUES 
 (1, 'Becuri LED', 3, 5),
 (1, 'Pahare unică folosință', 100, 20),

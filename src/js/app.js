@@ -181,15 +181,23 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Modal Logic
     const itemModal = document.getElementById('item-modal');
+    const categoryModal = document.getElementById('category-modal');
+
     document.getElementById('add-item-btn').addEventListener('click', () => {
         document.getElementById('item-form').reset();
         document.getElementById('item-id').value = '';
         itemModal.classList.remove('hidden');
     });
 
+    document.getElementById('add-category-btn').addEventListener('click', () => {
+        document.getElementById('category-form').reset();
+        categoryModal.classList.remove('hidden');
+    });
+
     document.querySelectorAll('.close-modal').forEach(btn => {
         btn.addEventListener('click', () => {
             itemModal.classList.add('hidden');
+            if (categoryModal) categoryModal.classList.add('hidden');
         });
     });
 
@@ -213,6 +221,25 @@ document.addEventListener('DOMContentLoaded', () => {
         if (res) {
             showToast('Articol adăugat cu succes', 'success');
             itemModal.classList.add('hidden');
+            await init(); // re-fetch data
+        }
+    });
+
+    document.getElementById('category-form').addEventListener('submit', async (e) => {
+        e.preventDefault();
+        const payload = {
+            name: document.getElementById('category-name').value
+        };
+
+        const res = await fetchAPI('/categories', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(payload)
+        });
+
+        if (res) {
+            showToast('Categorie adăugată cu succes', 'success');
+            categoryModal.classList.add('hidden');
             await init(); // re-fetch data
         }
     });

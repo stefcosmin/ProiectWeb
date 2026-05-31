@@ -153,6 +153,8 @@ body {
     align-items: center;
     justify-content: space-between;
     padding: 0 2rem;
+    position: relative;
+    z-index: 50;
 }
 
 .page-title h1 {
@@ -213,7 +215,7 @@ body {
     max-height: 400px;
     overflow-y: auto;
     padding: 1rem;
-    z-index: 50;
+    z-index: 90;
     box-shadow: 0 15px 40px rgba(0, 0, 0, 0.5);
 }
 
