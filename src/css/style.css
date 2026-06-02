@@ -976,3 +976,29 @@ a:hover {
         width: 100% !important;
     }
 }
+
+/* ---------- NOTIFICARI ---------- */
+.notif-dot {
+    display: inline-block;
+    width: 9px;
+    height: 9px;
+    border-radius: 50%;
+    margin-right: 8px;
+    flex-shrink: 0;
+}
+
+.notif-dot--danger  { background: var(--red-500); }
+.notif-dot--warning { background: var(--amber-500); }
+
+.zile-badge {
+    display: inline-flex;
+    align-items: center;
+    padding: 2px 10px;
+    border-radius: 20px;
+    font-size: 12px;
+    font-weight: 600;
+    font-family: var(--font-mono);
+}
+
+.zile-badge--danger  { background: var(--red-50);   color: var(--red-600); }
+.zile-badge--warning { background: var(--amber-50); color: var(--amber-600); }
