@@ -1,0 +1,192 @@
+<!DOCTYPE html>
+<html lang="ro">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>StockPro — Statistici</title>
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+</head>
+<body>
+
+    <!-- ===== SIDEBAR ===== -->
+    <aside class="sidebar" id="sidebar">
+        <div class="sidebar-logo">
+            <span class="logo-icon">S</span>
+            <span class="logo-text">StockPro</span>
+        </div>
+        <nav class="sidebar-nav">
+            <a href="index.html" class="nav-item">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg>
+                Dashboard
+            </a>
+            <a href="categorii.html" class="nav-item">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M3 6h18M3 12h18M3 18h18"/></svg>
+                Categorii
+            </a>
+            <a href="articole.html" class="nav-item">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M20 7H4a1 1 0 00-1 1v10a1 1 0 001 1h16a1 1 0 001-1V8a1 1 0 00-1-1z"/><path d="M16 3H8a1 1 0 00-1 1v3h10V4a1 1 0 00-1-1z"/></svg>
+                Articole
+            </a>
+            <a href="notificari.html" class="nav-item">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M18 8A6 6 0 006 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 01-3.46 0"/></svg>
+                Notificări
+                <span class="nav-badge" id="nav-badge" style="display:none"></span>
+            </a>
+            <a href="import-export.html" class="nav-item">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
+                Import / Export
+            </a>
+            <a href="statistici.html" class="nav-item active">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg>
+                Statistici
+            </a>
+            <a href="admin.html" class="nav-item">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="8" r="4"/><path d="M4 20c0-4 3.6-7 8-7s8 3 8 7"/></svg>
+                Administrare
+            </a>
+        </nav>
+        <div class="sidebar-footer">
+            <span class="footer-label">v1.0.0</span>
+        </div>
+    </aside>
+
+    <!-- ===== MAIN CONTENT ===== -->
+    <main class="main-content">
+
+        <header class="topbar">
+            <button class="menu-toggle" id="menu-toggle" aria-label="Meniu">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
+            </button>
+            <div class="topbar-title">
+                <h1>Statistici</h1>
+                <span class="topbar-subtitle" id="topbar-date"></span>
+            </div>
+            <div class="topbar-actions">
+                <button class="btn btn-secondary" id="btn-print">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><polyline points="6 9 6 2 18 2 18 9"/><path d="M6 18H4a2 2 0 01-2-2v-5a2 2 0 012-2h16a2 2 0 012 2v5a2 2 0 01-2 2h-2"/><rect x="6" y="14" width="12" height="8"/></svg>
+                    Printează / PDF
+                </button>
+            </div>
+        </header>
+
+        <div class="page-content" id="raport-continut">
+
+            <!-- Sumar general -->
+            <section class="stats-grid" aria-label="Sumar general">
+                <div class="stat-card">
+                    <div class="stat-label">Total articole</div>
+                    <div class="stat-value" id="val-total">—</div>
+                    <div class="stat-sub">în inventar</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-label">Categorii</div>
+                    <div class="stat-value" id="val-categorii">—</div>
+                    <div class="stat-sub">active</div>
+                </div>
+                <div class="stat-card stat-card--warning">
+                    <div class="stat-label">Stoc redus</div>
+                    <div class="stat-value" id="val-redus">—</div>
+                    <div class="stat-sub">necesită atenție</div>
+                </div>
+                <div class="stat-card stat-card--danger">
+                    <div class="stat-label">Epuizate</div>
+                    <div class="stat-value" id="val-epuizat">—</div>
+                    <div class="stat-sub">cantitate zero</div>
+                </div>
+            </section>
+
+            <!-- Grafice -->
+            <div class="grafice-grid">
+
+                <!-- Distributie pe categorii (bar chart SVG) -->
+                <section class="card">
+                    <div class="card-header">
+                        <h2>Articole per categorie</h2>
+                    </div>
+                    <div class="card-body">
+                        <div id="chart-categorii" class="chart-container">
+                            <div class="loading-row">Se încarcă...</div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Distributie stare stoc (donut SVG) -->
+                <section class="card">
+                    <div class="card-header">
+                        <h2>Distribuție stare stoc</h2>
+                    </div>
+                    <div class="card-body">
+                        <div id="chart-stare" class="chart-container chart-container--donut">
+                            <div class="loading-row">Se încarcă...</div>
+                        </div>
+                    </div>
+                </section>
+
+            </div>
+
+            <!-- Top articole stoc minim -->
+            <section class="card">
+                <div class="card-header">
+                    <h2>Top 10 — articole cu cel mai mic stoc</h2>
+                    <span class="topbar-subtitle">față de pragul minim</span>
+                </div>
+                <div class="card-body" style="padding:0">
+                    <div class="table-wrapper">
+                        <table class="data-table">
+                            <thead>
+                                <tr>
+                                    <th style="width:40px">#</th>
+                                    <th>Articol</th>
+                                    <th>Categorie</th>
+                                    <th style="width:100px">Cantitate</th>
+                                    <th style="width:110px">Prag minim</th>
+                                    <th style="width:160px">Nivel stoc</th>
+                                    <th style="width:100px">Stare</th>
+                                </tr>
+                            </thead>
+                            <tbody id="tbody-top-stoc">
+                                <tr><td colspan="7" class="loading-row">Se încarcă...</td></tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Tabel complet per categorie -->
+            <section class="card">
+                <div class="card-header">
+                    <h2>Raport complet per categorie</h2>
+                </div>
+                <div class="card-body" style="padding:0">
+                    <div class="table-wrapper">
+                        <table class="data-table">
+                            <thead>
+                                <tr>
+                                    <th>Categorie</th>
+                                    <th style="width:120px">Nr. articole</th>
+                                    <th style="width:120px">Stoc total</th>
+                                    <th style="width:120px">Stoc redus</th>
+                                    <th style="width:120px">Epuizate</th>
+                                </tr>
+                            </thead>
+                            <tbody id="tbody-raport-categorii">
+                                <tr><td colspan="5" class="loading-row">Se încarcă...</td></tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </section>
+
+        </div>
+    </main>
+
+    <!-- ===== TOAST ===== -->
+    <div class="toast-container" id="toast-container" aria-live="polite"></div>
+
+    <script src="js/app.js"></script>
+    <script src="js/statistici.js"></script>
+</body>
+</html>
