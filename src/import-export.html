@@ -32,7 +32,7 @@
             </a>
             <a href="notificari.html" class="nav-item">
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M18 8A6 6 0 006 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 01-3.46 0"/></svg>
-                Notificări
+                Notificari
                 <span class="nav-badge" id="nav-badge" style="display:none"></span>
             </a>
             <a href="import-export.html" class="nav-item active">
@@ -68,33 +68,33 @@
 
         <div class="page-content">
 
-            <!-- ===== EXPORT ===== -->
+            <!-- ===== SECTIUNE EXPORT ===== -->
             <section class="card">
                 <div class="card-header">
                     <h2>
                         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" style="width:18px;height:18px;vertical-align:middle;margin-right:6px"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
                         Export date
                     </h2>
-                    <span class="topbar-subtitle">Descarcă inventarul în formatul dorit</span>
+                    <span class="topbar-subtitle">Descarca inventarul in formatul dorit</span>
                 </div>
                 <div class="card-body">
                     <p style="font-size:13.5px;color:var(--gray-600);margin-bottom:20px;line-height:1.6">
-                        Exportă toate articolele și categoriile din inventar. Fișierul descărcat poate fi folosit ca backup sau importat în altă aplicație.
+                        Exporta toate articolele si categoriile din inventar in 3 formate disponibile. Fisierul descarcat poate fi folosit ca backup sau importat ulterior.
                     </p>
                     <div class="export-grid">
 
                         <!-- CSV -->
                         <div class="export-card">
                             <div class="export-icon export-icon--green">
-                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/></svg>
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>
                             </div>
                             <div class="export-info">
                                 <div class="export-name">CSV</div>
-                                <div class="export-desc">Comma Separated Values — compatibil cu Excel</div>
+                                <div class="export-desc">Comma Separated Values — compatibil cu Excel si Google Sheets</div>
                             </div>
                             <button class="btn btn-secondary" id="btn-export-csv">
                                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
-                                Descarcă
+                                Descarca
                             </button>
                         </div>
 
@@ -105,11 +105,11 @@
                             </div>
                             <div class="export-info">
                                 <div class="export-name">JSON</div>
-                                <div class="export-desc">JavaScript Object Notation — format universal</div>
+                                <div class="export-desc">JavaScript Object Notation — format universal pentru date structurate</div>
                             </div>
                             <button class="btn btn-secondary" id="btn-export-json">
                                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
-                                Descarcă
+                                Descarca
                             </button>
                         </div>
 
@@ -120,11 +120,11 @@
                             </div>
                             <div class="export-info">
                                 <div class="export-name">XML</div>
-                                <div class="export-desc">Extensible Markup Language — format structurat</div>
+                                <div class="export-desc">Extensible Markup Language — format structurat pentru interoperabilitate</div>
                             </div>
                             <button class="btn btn-secondary" id="btn-export-xml">
                                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
-                                Descarcă
+                                Descarca
                             </button>
                         </div>
 
@@ -132,14 +132,14 @@
                 </div>
             </section>
 
-            <!-- ===== IMPORT ===== -->
+            <!-- ===== SECTIUNE IMPORT ===== -->
             <section class="card">
                 <div class="card-header">
                     <h2>
                         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" style="width:18px;height:18px;vertical-align:middle;margin-right:6px"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
                         Import date
                     </h2>
-                    <span class="topbar-subtitle">Încarcă articole dintr-un fișier existent</span>
+                    <span class="topbar-subtitle">Incarca articole dintr-un fisier CSV, JSON sau XML</span>
                 </div>
                 <div class="card-body">
 
@@ -147,17 +147,21 @@
                     <div class="import-tabs">
                         <button class="import-tab active" data-format="csv">CSV</button>
                         <button class="import-tab" data-format="json">JSON</button>
+                        <button class="import-tab" data-format="xml">XML</button>
                     </div>
 
-                    <!-- Instructiuni format -->
+                    <!-- Instructiuni CSV -->
                     <div class="format-info" id="info-csv">
-                        <strong>Format CSV așteptat:</strong>
+                        <strong>Format CSV asteptat (prima linie = header):</strong>
                         <code class="code-block">name,category_id,quantity,min_threshold,last_checked
 Becuri LED,1,50,10,2026-01-15
-Ulei motor 5W40,2,8,5,2026-03-20</code>
+Ulei motor 5W40,2,8,5,2026-03-20
+Toner imprimanta,3,2,3,</code>
                     </div>
+
+                    <!-- Instructiuni JSON -->
                     <div class="format-info" id="info-json" style="display:none">
-                        <strong>Format JSON așteptat:</strong>
+                        <strong>Format JSON asteptat (array de obiecte):</strong>
                         <code class="code-block">[
   {
     "name": "Becuri LED",
@@ -165,19 +169,41 @@ Ulei motor 5W40,2,8,5,2026-03-20</code>
     "quantity": 50,
     "min_threshold": 10,
     "last_checked": "2026-01-15"
+  },
+  {
+    "name": "Ulei motor 5W40",
+    "category_id": 2,
+    "quantity": 8,
+    "min_threshold": 5,
+    "last_checked": null
   }
 ]</code>
+                    </div>
+
+                    <!-- Instructiuni XML -->
+                    <div class="format-info" id="info-xml" style="display:none">
+                        <strong>Format XML asteptat (element radacina: inventar):</strong>
+                        <code class="code-block">&lt;?xml version="1.0" encoding="UTF-8"?&gt;
+&lt;inventar&gt;
+  &lt;articol&gt;
+    &lt;nume&gt;Becuri LED&lt;/nume&gt;
+    &lt;categorie_id&gt;1&lt;/categorie_id&gt;
+    &lt;cantitate&gt;50&lt;/cantitate&gt;
+    &lt;prag_minim&gt;10&lt;/prag_minim&gt;
+    &lt;ultima_verificare&gt;2026-01-15&lt;/ultima_verificare&gt;
+  &lt;/articol&gt;
+&lt;/inventar&gt;</code>
                     </div>
 
                     <!-- Drop zone -->
                     <div class="dropzone" id="dropzone">
                         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" class="dropzone-icon"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
-                        <p class="dropzone-text">Trage fișierul aici sau <label for="input-file" class="dropzone-link">alege fișier</label></p>
+                        <p class="dropzone-text">Trage fisierul aici sau <label for="input-file" class="dropzone-link">alege fisier</label></p>
                         <p class="dropzone-sub" id="dropzone-format">Formate acceptate: .csv</p>
                         <input type="file" id="input-file" accept=".csv" style="display:none">
                     </div>
 
-                    <!-- Preview -->
+                    <!-- Preview tabel -->
                     <div id="import-preview" style="display:none">
                         <div class="preview-header">
                             <div class="preview-info">
@@ -185,7 +211,7 @@ Ulei motor 5W40,2,8,5,2026-03-20</code>
                                 <span style="font-size:13px;color:var(--gray-600);margin-left:8px" id="preview-filename"></span>
                             </div>
                             <button class="btn btn-secondary" id="btn-reset-import" style="font-size:12px;padding:5px 10px">
-                                Schimbă fișier
+                                Schimba fisier
                             </button>
                         </div>
                         <div class="table-wrapper" style="max-height:260px;overflow-y:auto">
@@ -197,7 +223,7 @@ Ulei motor 5W40,2,8,5,2026-03-20</code>
                         <div style="margin-top:16px;display:flex;justify-content:flex-end">
                             <button class="btn btn-primary" id="btn-import-confirm">
                                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg>
-                                Importă <span id="import-nr"></span> articole
+                                Importa <span id="import-nr"></span> articole
                             </button>
                         </div>
                     </div>
@@ -209,7 +235,7 @@ Ulei motor 5W40,2,8,5,2026-03-20</code>
             <section class="card" id="card-log" style="display:none">
                 <div class="card-header">
                     <h2>Rezultat import</h2>
-                    <button class="btn btn-secondary" id="btn-inchide-log" style="font-size:12px;padding:5px 10px">Închide</button>
+                    <button class="btn btn-secondary" id="btn-inchide-log" style="font-size:12px;padding:5px 10px">Inchide</button>
                 </div>
                 <div class="card-body" id="log-body"></div>
             </section>
