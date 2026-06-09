@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html lang="ro">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+    <title>StockPro - System Requirements Specification</title>
+    <style>
+        body {
+            font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+            line-height: 1.6;
+            margin: 0 auto;
+            max-width: 900px;
+            padding: 2em;
+            color: #333;
+            background: #fafafa;
+        }
+
+        header {
+            text-align: center;
+            margin-bottom: 3em;
+        }
+
+        h1 {
+            color: #1a202c;
+            font-size: 2.5em;
+            margin-bottom: 0.2em;
+        }
+
+        .subtitle {
+            font-size: 1.2em;
+            color: #718096;
+            margin-bottom: 1em;
+        }
+
+        .authors {
+            font-size: 1.1em;
+            font-weight: bold;
+            margin-bottom: 2em;
+        }
+
+        section {
+            background: #fff;
+            padding: 2em;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            margin-bottom: 2em;
+        }
+
+        h2 {
+            border-bottom: 2px solid #e2e8f0;
+            padding-bottom: 0.3em;
+            color: #2d3748;
+            margin-top: 0;
+        }
+
+        h3 {
+            color: #4a5568;
+            margin-top: 1.5em;
+        }
+
+        ul {
+            margin-top: 0.5em;
+            padding-left: 1.5em;
+        }
+
+        li {
+            margin-bottom: 0.5em;
+        }
+
+        code {
+            background: #edf2f7;
+            padding: 0.2em 0.4em;
+            border-radius: 3px;
+            font-family: monospace;
+        }
+    </style>
+</head>
+
+<body prefix="schema: http://schema.org">
+
+    <header>
+        <h1 property="schema:name">StockPro - System Requirements</h1>
+        <div class="subtitle" role="doc-subtitle">Software Requirements Specification (bazat pe IEEE SRS Template)</div>
+        <div class="authors" typeof="sa:ContributorRole" property="schema:author">
+            <span typeof="schema:Person" property="schema:name">Pădurariu Alexandru, Ștefanache Cosmin</span>
+        </div>
+    </header>
+
+    <section id="abstract" typeof="sa:Abstract" role="doc-abstract">
+        <h2>1. Rezumat (Abstract)</h2>
+        <p>Proiectul <strong>StockPro</strong> reprezintă o aplicație Web dedicată gestionării eficiente a stocurilor de
+            articole esențiale, consumabilelor și pieselor de schimb (ex: unelte, electronice, articole de uz casnic
+            etc.). Sistemul este proiectat pentru a fi implementat în cadrul unei gospodării, organizații sau
+            întreprinderi. Platforma automatizează procesul de monitorizare a stocurilor, generând notificări în
+            interfață și prin e-mail la epuizarea iminentă a resurselor sau la termenele de inspecție. Prezenta
+            documentație Scholarly HTML definește setul de cerințe funcționale și non-funcționale conform standardului
+            IEEE.</p>
+    </section>
+
+    <section id="introduction">
+        <h2>2. Introducere</h2>
+        <h3>2.1 Scopul Documentului</h3>
+        <p>Scopul acestui document este de a descrie arhitectura și cerințele sistemului software StockPro. Acesta
+            include o descriere detaliată a interacțiunii utilizatorului cu aplicația web și o specificare tehnică a
+            serviciilor backend.</p>
+
+        <h3>2.2 Public Țintă</h3>
+        <p>Aplicația se adresează utilizatorilor sau administratorilor care doresc eficientizarea gestiunii depozitului
+            propriu, reducerea pierderilor cauzate de expirarea materialelor și monitorizarea consumului prin rapoarte
+            exportabile.</p>
+    </section>
+
+    <section id="overall-description">
+        <h2>3. Descriere Generală</h2>
+        <h3>3.1 Perspectiva Produsului și Arhitectura</h3>
+        <p>Produsul este dezvoltat pe arhitectura <strong>Client - Server</strong>, fiind bazat exclusiv pe
+            <strong>Servicii Web (RESTful API)</strong>. Backend-ul este procesat folosind limbajul
+            <strong>PHP</strong>, iar stocarea datelor se face într-o bază de date relațională (MySQL). Frontend-ul este
+            un <em>Single Page Application (SPA)</em> simulat sau hibrid, construit respectând standardele web cu
+            <strong>HTML5, CSS3 și JavaScript (Vanilla)</strong>. Nu s-a utilizat niciun framework. Comunicația între
+            client și server se face asincron, prin AJAX (Fetch API) utilizând formatul JSON.
+        </p>
+
+        <h3>3.2 Interacțiunea cu Utilizatorul</h3>
+        <p>Utilizatorul interacționează cu sistemul prin intermediul unui meniu lateral (Sidebar) care facilitează
+            accesul la modulele: Dashboard, Categorii, Articole, Notificări, Import/Export și Administrare. Toate
+            acțiunile (CRUD) se realizează dinamic, răspunsul fiind afișat prin notificări tip pop-up (Toast) și
+            ferestre modale, pentru a menține o navigare cursivă fără reîncărcarea paginii.</p>
+    </section>
+
+    <section id="functional-requirements">
+        <h2>4. Cerințe Funcționale</h2>
+
+        <h3>4.1 Managementul Categoriilor</h3>
+        <ul>
+            <li>Sistemul trebuie să permită vizualizarea unei liste dinamice de categorii, cu contorizarea automată a
+                numărului de articole per categorie.</li>
+            <li>Utilizatorul trebuie să poată crea, redenumi și șterge categorii.</li>
+        </ul>
+
+        <h3>4.2 Managementul Articolelor (Stocurilor)</h3>
+        <ul>
+            <li>Aplicația trebuie să permită înregistrarea de noi articole specificând: <em>Nume, Categorie, Cantitate,
+                    Prag minim de alertă, Data ultimei verificări</em>.</li>
+            <li>Informațiile despre articole pot fi modificate, iar stocurile pot fi actualizate numeric în orice
+                moment.</li>
+            <li>Modulul trebuie să conțină un sistem de filtrare și căutare live (după text, categorie și starea
+                stocului: OK / Stoc redus / Epuizat).</li>
+        </ul>
+
+        <h3>4.3 Alerte și Notificări Inteligente</h3>
+        <ul>
+            <li>Aplicația trebuie să genereze automat o notificare internă pentru fiecare produs a cărui cantitate scade
+                sub sau este egală cu <em>Pragul minim de alertă</em>.</li>
+            <li>Se vor genera alerte pentru articolele (ex. echipamente tehnice, mașini) a căror dată de verificare este
+                mai veche de o perioadă stabilită (ex. 30 zile).</li>
+            <li>Sistemul trebuie să poată compila aceste alerte și să trimită rapoarte prin <strong>e-mail</strong>,
+                funcționalitate declanșabilă din aplicație sau cron-job.</li>
+        </ul>
+
+        <h3>4.4 Import și Export de Date</h3>
+        <ul>
+            <li><strong>Export:</strong> Sistemul trebuie să genereze și să descarce inventarul în 3 formate deschise:
+                <code>CSV</code>, <code>JSON</code> și <code>XML</code>.
+            </li>
+            <li><strong>Import:</strong> Utilizatorul trebuie să poată popula rapid inventarul prin încărcarea
+                fișierelor cu structură standardizată (CSV, JSON, XML).</li>
+            <li><strong>Statistici:</strong> Rapoartele generate se pot consulta sub formă HTML și pot fi exportate
+                direct în format PDF prin mecanismele browserului.</li>
+        </ul>
+    </section>
+
+    <section id="non-functional-requirements">
+        <h2>5. Cerințe Non-Funcționale</h2>
+
+        <h3>5.1 Securitate</h3>
+        <ul>
+            <li>Sistemul backend va utiliza interogări pre-compilate (<em>Prepared Statements</em> prin extensia PDO)
+                pentru a neutraliza orice tentativă de <strong>SQL Injection</strong>.</li>
+            <li>Datele afișate în interfața clientului sunt sanitizate pentru a preveni atacurile <strong>Cross-Site
+                    Scripting (XSS)</strong> folosind funcții de escape (ex. transformarea caracterelor speciale în
+                entități HTML).</li>
+        </ul>
+
+        <h3>5.2 Design Web Responsiv (RWD)</h3>
+        <ul>
+            <li>Aplicația trebuie să garanteze o funcționalitate vizuală corectă pe rezoluții variate (desktop, tabletă,
+                dispozitive mobile). Interfața se readaptează dinamic pe lățimi mici de ecran folosind Media Queries din
+                CSS.</li>
+        </ul>
+
+        <h3>5.3 Respectarea Principiilor Ingineriei Software</h3>
+        <ul>
+            <li>Codul trebuie să fie modularizat (separarea responsabilităților: Router, Controlere API, Scripturi
+                Frontend per secțiune) și comentat descriptiv.</li>
+            <li>Dezvoltarea aplicației s-a realizat iterativ folosind sistemul de management al versiunilor (Git).</li>
+        </ul>
+    </section>
+
+</body>
+
+</html>

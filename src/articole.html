@@ -1,0 +1,227 @@
+<!DOCTYPE html>
+<html lang="ro">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>StockPro — Articole</title>
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+</head>
+<body>
+
+    <!-- ===== SIDEBAR ===== -->
+    <aside class="sidebar" id="sidebar">
+        <div class="sidebar-logo">
+            <span class="logo-icon">S</span>
+            <span class="logo-text">StockPro</span>
+        </div>
+        <nav class="sidebar-nav">
+            <a href="index.html" class="nav-item">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg>
+                Dashboard
+            </a>
+            <a href="categorii.html" class="nav-item">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M3 6h18M3 12h18M3 18h18"/></svg>
+                Categorii
+            </a>
+            <a href="articole.html" class="nav-item active">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M20 7H4a1 1 0 00-1 1v10a1 1 0 001 1h16a1 1 0 001-1V8a1 1 0 00-1-1z"/><path d="M16 3H8a1 1 0 00-1 1v3h10V4a1 1 0 00-1-1z"/></svg>
+                Articole
+            </a>
+            <a href="notificari.html" class="nav-item">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M18 8A6 6 0 006 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 01-3.46 0"/></svg>
+                Notificări
+                <span class="nav-badge" id="nav-badge" style="display:none"></span>
+            </a>
+            <a href="import-export.html" class="nav-item">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
+                Import / Export
+            </a>
+            <a href="statistici.html" class="nav-item">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg>
+                Statistici
+            </a>
+            <a href="admin.html" class="nav-item">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="8" r="4"/><path d="M4 20c0-4 3.6-7 8-7s8 3 8 7"/></svg>
+                Administrare
+            </a>
+        </nav>
+        <div class="sidebar-footer">
+            <span class="footer-label">v1.0.0</span>
+        </div>
+    </aside>
+
+    <!-- ===== MAIN CONTENT ===== -->
+    <main class="main-content">
+
+        <header class="topbar">
+            <button class="menu-toggle" id="menu-toggle" aria-label="Meniu">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
+            </button>
+            <div class="topbar-title">
+                <h1>Articole</h1>
+                <span class="topbar-subtitle" id="topbar-date"></span>
+            </div>
+            <div class="topbar-actions">
+                <button class="btn btn-primary" id="btn-adauga">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+                    Articol nou
+                </button>
+            </div>
+        </header>
+
+        <div class="page-content">
+
+            <!-- Stat cards -->
+            <section class="stats-grid" aria-label="Sumar articole">
+                <div class="stat-card">
+                    <div class="stat-label">Total articole</div>
+                    <div class="stat-value" id="val-total">—</div>
+                    <div class="stat-sub">în inventar</div>
+                </div>
+                <div class="stat-card stat-card--warning">
+                    <div class="stat-label">Stoc redus</div>
+                    <div class="stat-value" id="val-redus">—</div>
+                    <div class="stat-sub">sub pragul minim</div>
+                </div>
+                <div class="stat-card stat-card--danger">
+                    <div class="stat-label">Epuizate</div>
+                    <div class="stat-value" id="val-epuizat">—</div>
+                    <div class="stat-sub">cantitate zero</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-label">Categorii active</div>
+                    <div class="stat-value" id="val-categorii">—</div>
+                    <div class="stat-sub">cu articole</div>
+                </div>
+            </section>
+
+            <!-- Filtre -->
+            <div class="filtre-bar">
+                <div class="search-bar" style="flex:1">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" class="search-icon"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+                    <input type="text" id="input-search" class="search-input" placeholder="Caută articol..." autocomplete="off">
+                </div>
+                <select id="filter-categorie" class="form-control" style="width:200px">
+                    <option value="">Toate categoriile</option>
+                </select>
+                <select id="filter-stare" class="form-control" style="width:160px">
+                    <option value="">Toate stările</option>
+                    <option value="ok">OK</option>
+                    <option value="redus">Stoc redus</option>
+                    <option value="epuizat">Epuizat</option>
+                </select>
+            </div>
+
+            <!-- Tabel articole -->
+            <section class="card">
+                <div class="card-header">
+                    <h2>Lista articolelor</h2>
+                    <span class="topbar-subtitle" id="label-count"></span>
+                </div>
+                <div class="card-body" style="padding:0">
+                    <div class="table-wrapper">
+                        <table class="data-table" id="table-articole">
+                            <thead>
+                                <tr>
+                                    <th style="width:40px">#</th>
+                                    <th>Articol</th>
+                                    <th>Categorie</th>
+                                    <th style="width:100px">Cantitate</th>
+                                    <th style="width:110px">Prag minim</th>
+                                    <th style="width:130px">Ultima verificare</th>
+                                    <th style="width:100px">Stare</th>
+                                    <th style="width:160px">Acțiuni</th>
+                                </tr>
+                            </thead>
+                            <tbody id="tbody-articole">
+                                <tr><td colspan="8" class="loading-row">Se încarcă...</td></tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </section>
+
+        </div>
+    </main>
+
+    <!-- ===== MODAL ADAUGA / EDITEAZA ===== -->
+    <div class="modal-overlay" id="modal-overlay" style="display:none">
+        <div class="modal" role="dialog" aria-modal="true" aria-labelledby="modal-title" style="max-width:520px">
+            <div class="modal-header">
+                <h3 id="modal-title">Articol nou</h3>
+                <button class="modal-close" id="modal-close" aria-label="Închide">&times;</button>
+            </div>
+            <div class="modal-body">
+
+                <div class="form-group">
+                    <label class="form-label" for="input-nume">Nume articol</label>
+                    <input type="text" id="input-nume" class="form-control" placeholder="ex: Becuri LED 60W, Ulei motor..." maxlength="150" autocomplete="off">
+                    <span class="form-error" id="error-nume"></span>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label" for="input-categorie">Categorie</label>
+                    <select id="input-categorie" class="form-control">
+                        <option value="">— Selectează categorie —</option>
+                    </select>
+                    <span class="form-error" id="error-categorie"></span>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group" style="flex:1">
+                        <label class="form-label" for="input-cantitate">Cantitate</label>
+                        <input type="number" id="input-cantitate" class="form-control" placeholder="0" min="0" step="1">
+                        <span class="form-error" id="error-cantitate"></span>
+                    </div>
+                    <div class="form-group" style="flex:1">
+                        <label class="form-label" for="input-prag">Prag minim alertă</label>
+                        <input type="number" id="input-prag" class="form-control" placeholder="5" min="0" step="1">
+                        <span class="form-error" id="error-prag"></span>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label" for="input-verificare">Ultima verificare</label>
+                    <input type="date" id="input-verificare" class="form-control">
+                </div>
+
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-secondary" id="btn-anuleaza">Anulează</button>
+                <button class="btn btn-primary" id="btn-salveaza">Adaugă</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- ===== MODAL CONFIRMARE STERGERE ===== -->
+    <div class="modal-overlay" id="modal-delete" style="display:none">
+        <div class="modal" role="dialog" aria-modal="true">
+            <div class="modal-header">
+                <h3>Confirmare ștergere</h3>
+                <button class="modal-close" id="delete-close" aria-label="Închide">&times;</button>
+            </div>
+            <div class="modal-body">
+                <p style="color:var(--gray-700);font-size:14px;line-height:1.6">
+                    Ești sigur că vrei să ștergi articolul
+                    <strong id="delete-name"></strong>?
+                    <br>
+                    <span style="color:var(--red-600);font-size:13px">Această acțiune nu poate fi anulată.</span>
+                </p>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-secondary" id="delete-anuleaza">Anulează</button>
+                <button class="btn btn-danger" id="delete-confirma">Șterge</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- ===== TOAST ===== -->
+    <div class="toast-container" id="toast-container" aria-live="polite"></div>
+
+    <script src="js/app.js"></script>
+    <script src="js/articole.js"></script>
+</body>
+</html>

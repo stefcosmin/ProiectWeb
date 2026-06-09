@@ -1,0 +1,1 @@
+Specificarea cerinţelor principale referitoare la funcţionalităţile esenţiale ale aplicaţiei şi la interacţiunea cu utilizatorul. Acestea vor fi incluse într-un raport în formatul Scholarly HTML disponibil pe situl Web dedicat proiectului ales. A se lua în consideraţie prevederile oferite de macheta IEEE System Requirements Specification Template.

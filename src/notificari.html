@@ -1,0 +1,216 @@
+<!DOCTYPE html>
+<html lang="ro">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>StockPro — Notificări</title>
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+</head>
+<body>
+
+    <!-- ===== SIDEBAR ===== -->
+    <aside class="sidebar" id="sidebar">
+        <div class="sidebar-logo">
+            <span class="logo-icon">S</span>
+            <span class="logo-text">StockPro</span>
+        </div>
+        <nav class="sidebar-nav">
+            <a href="index.html" class="nav-item">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg>
+                Dashboard
+            </a>
+            <a href="categorii.html" class="nav-item">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M3 6h18M3 12h18M3 18h18"/></svg>
+                Categorii
+            </a>
+            <a href="articole.html" class="nav-item">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M20 7H4a1 1 0 00-1 1v10a1 1 0 001 1h16a1 1 0 001-1V8a1 1 0 00-1-1z"/><path d="M16 3H8a1 1 0 00-1 1v3h10V4a1 1 0 00-1-1z"/></svg>
+                Articole
+            </a>
+            <a href="notificari.html" class="nav-item active">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M18 8A6 6 0 006 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 01-3.46 0"/></svg>
+                Notificări
+                <span class="nav-badge" id="nav-badge" style="display:none"></span>
+            </a>
+            <a href="import-export.html" class="nav-item">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
+                Import / Export
+            </a>
+            <a href="statistici.html" class="nav-item">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg>
+                Statistici
+            </a>
+            <a href="admin.html" class="nav-item">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="8" r="4"/><path d="M4 20c0-4 3.6-7 8-7s8 3 8 7"/></svg>
+                Administrare
+            </a>
+        </nav>
+        <div class="sidebar-footer">
+            <span class="footer-label">v1.0.0</span>
+        </div>
+    </aside>
+
+    <!-- ===== MAIN CONTENT ===== -->
+    <main class="main-content">
+
+        <header class="topbar">
+            <button class="menu-toggle" id="menu-toggle" aria-label="Meniu">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
+            </button>
+            <div class="topbar-title">
+                <h1>Notificări</h1>
+                <span class="topbar-subtitle" id="topbar-date"></span>
+            </div>
+            <div class="topbar-actions">
+                <button class="btn btn-secondary" id="btn-refresh">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M23 4v6h-6"/><path d="M20.49 15a9 9 0 11-2.12-9.36L23 10"/></svg>
+                    Actualizează
+                </button>
+            </div>
+        </header>
+
+        <div class="page-content">
+
+            <!-- Stat cards -->
+            <section class="stats-grid" aria-label="Sumar notificari">
+                <div class="stat-card stat-card--danger">
+                    <div class="stat-label">Stoc epuizat</div>
+                    <div class="stat-value" id="val-epuizat">—</div>
+                    <div class="stat-sub">articole la zero</div>
+                </div>
+                <div class="stat-card stat-card--warning">
+                    <div class="stat-label">Stoc redus</div>
+                    <div class="stat-value" id="val-redus">—</div>
+                    <div class="stat-sub">sub pragul minim</div>
+                </div>
+                <div class="stat-card stat-card--warning">
+                    <div class="stat-label">Verificări restante</div>
+                    <div class="stat-value" id="val-verificari">—</div>
+                    <div class="stat-sub">peste 30 de zile</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-label">Total alerte</div>
+                    <div class="stat-value" id="val-total">—</div>
+                    <div class="stat-sub">active acum</div>
+                </div>
+            </section>
+
+            <!-- Sectiune stoc epuizat / redus -->
+            <section class="card">
+                <div class="card-header">
+                    <h2>
+                        <span class="notif-dot notif-dot--danger"></span>
+                        Alerte stoc
+                    </h2>
+                    <span class="topbar-subtitle" id="label-stoc"></span>
+                </div>
+                <div class="card-body" style="padding:0">
+                    <div class="table-wrapper">
+                        <table class="data-table">
+                            <thead>
+                                <tr>
+                                    <th>Articol</th>
+                                    <th>Categorie</th>
+                                    <th style="width:110px">Cantitate</th>
+                                    <th style="width:120px">Prag minim</th>
+                                    <th style="width:110px">Stare</th>
+                                    <th style="width:140px">Acțiune rapidă</th>
+                                </tr>
+                            </thead>
+                            <tbody id="tbody-stoc">
+                                <tr><td colspan="6" class="loading-row">Se încarcă...</td></tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Sectiune verificari restante -->
+            <section class="card">
+                <div class="card-header">
+                    <h2>
+                        <span class="notif-dot notif-dot--warning"></span>
+                        Verificări restante
+                    </h2>
+                    <span class="topbar-subtitle" id="label-verificari"></span>
+                </div>
+                <div class="card-body" style="padding:0">
+                    <div class="table-wrapper">
+                        <table class="data-table">
+                            <thead>
+                                <tr>
+                                    <th>Articol / Echipament</th>
+                                    <th>Categorie</th>
+                                    <th style="width:160px">Ultima verificare</th>
+                                    <th style="width:120px">Zile restante</th>
+                                    <th style="width:140px">Acțiune rapidă</th>
+                                </tr>
+                            </thead>
+                            <tbody id="tbody-verificari">
+                                <tr><td colspan="5" class="loading-row">Se încarcă...</td></tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </section>
+
+        </div>
+    </main>
+
+    <!-- ===== MODAL ACTUALIZARE CANTITATE ===== -->
+    <div class="modal-overlay" id="modal-cantitate" style="display:none">
+        <div class="modal" role="dialog" aria-modal="true">
+            <div class="modal-header">
+                <h3>Actualizează stoc</h3>
+                <button class="modal-close" id="cantitate-close" aria-label="Închide">&times;</button>
+            </div>
+            <div class="modal-body">
+                <p style="font-size:13px;color:var(--gray-600);margin-bottom:16px">
+                    Articol: <strong id="cantitate-nume"></strong>
+                </p>
+                <div class="form-group">
+                    <label class="form-label" for="input-cantitate-noua">Cantitate nouă</label>
+                    <input type="number" id="input-cantitate-noua" class="form-control" min="0" step="1" placeholder="0">
+                    <span class="form-error" id="error-cantitate-noua"></span>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-secondary" id="cantitate-anuleaza">Anulează</button>
+                <button class="btn btn-primary" id="cantitate-salveaza">Salvează</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- ===== MODAL MARCARE VERIFICATA ===== -->
+    <div class="modal-overlay" id="modal-verificare" style="display:none">
+        <div class="modal" role="dialog" aria-modal="true">
+            <div class="modal-header">
+                <h3>Marchează ca verificat</h3>
+                <button class="modal-close" id="verificare-close" aria-label="Închide">&times;</button>
+            </div>
+            <div class="modal-body">
+                <p style="font-size:13px;color:var(--gray-600);margin-bottom:16px">
+                    Articol: <strong id="verificare-nume"></strong>
+                </p>
+                <div class="form-group">
+                    <label class="form-label" for="input-data-verificare">Data verificării</label>
+                    <input type="date" id="input-data-verificare" class="form-control">
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-secondary" id="verificare-anuleaza">Anulează</button>
+                <button class="btn btn-primary" id="verificare-salveaza">Confirmă verificarea</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- ===== TOAST ===== -->
+    <div class="toast-container" id="toast-container" aria-live="polite"></div>
+
+    <script src="js/app.js"></script>
+    <script src="js/notificari.js"></script>
+</body>
+</html>

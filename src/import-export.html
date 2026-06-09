@@ -1,0 +1,252 @@
+<!DOCTYPE html>
+<html lang="ro">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>StockPro — Import / Export</title>
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+</head>
+<body>
+
+    <!-- ===== SIDEBAR ===== -->
+    <aside class="sidebar" id="sidebar">
+        <div class="sidebar-logo">
+            <span class="logo-icon">S</span>
+            <span class="logo-text">StockPro</span>
+        </div>
+        <nav class="sidebar-nav">
+            <a href="index.html" class="nav-item">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg>
+                Dashboard
+            </a>
+            <a href="categorii.html" class="nav-item">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M3 6h18M3 12h18M3 18h18"/></svg>
+                Categorii
+            </a>
+            <a href="articole.html" class="nav-item">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M20 7H4a1 1 0 00-1 1v10a1 1 0 001 1h16a1 1 0 001-1V8a1 1 0 00-1-1z"/><path d="M16 3H8a1 1 0 00-1 1v3h10V4a1 1 0 00-1-1z"/></svg>
+                Articole
+            </a>
+            <a href="notificari.html" class="nav-item">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M18 8A6 6 0 006 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 01-3.46 0"/></svg>
+                Notificari
+                <span class="nav-badge" id="nav-badge" style="display:none"></span>
+            </a>
+            <a href="import-export.html" class="nav-item active">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
+                Import / Export
+            </a>
+            <a href="statistici.html" class="nav-item">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg>
+                Statistici
+            </a>
+            <a href="admin.html" class="nav-item">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="8" r="4"/><path d="M4 20c0-4 3.6-7 8-7s8 3 8 7"/></svg>
+                Administrare
+            </a>
+        </nav>
+        <div class="sidebar-footer">
+            <span class="footer-label">v1.0.0</span>
+        </div>
+    </aside>
+
+    <!-- ===== MAIN CONTENT ===== -->
+    <main class="main-content">
+
+        <header class="topbar">
+            <button class="menu-toggle" id="menu-toggle" aria-label="Meniu">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
+            </button>
+            <div class="topbar-title">
+                <h1>Import / Export</h1>
+                <span class="topbar-subtitle" id="topbar-date"></span>
+            </div>
+        </header>
+
+        <div class="page-content">
+
+            <!-- ===== SECTIUNE EXPORT ===== -->
+            <section class="card">
+                <div class="card-header">
+                    <h2>
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" style="width:18px;height:18px;vertical-align:middle;margin-right:6px"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+                        Export date
+                    </h2>
+                    <span class="topbar-subtitle">Descarca inventarul in formatul dorit</span>
+                </div>
+                <div class="card-body">
+                    <p style="font-size:13.5px;color:var(--gray-600);margin-bottom:20px;line-height:1.6">
+                        Exporta toate articolele si categoriile din inventar in 3 formate disponibile. Fisierul descarcat poate fi folosit ca backup sau importat ulterior.
+                    </p>
+                    <div class="export-grid">
+
+                        <!-- CSV -->
+                        <div class="export-card">
+                            <div class="export-icon export-icon--green">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>
+                            </div>
+                            <div class="export-info">
+                                <div class="export-name">CSV</div>
+                                <div class="export-desc">Comma Separated Values — compatibil cu Excel si Google Sheets</div>
+                            </div>
+                            <button class="btn btn-secondary" id="btn-export-csv">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+                                Descarca
+                            </button>
+                        </div>
+
+                        <!-- JSON -->
+                        <div class="export-card">
+                            <div class="export-icon export-icon--blue">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><polyline points="16 18 22 12 16 6"/><polyline points="8 6 2 12 8 18"/></svg>
+                            </div>
+                            <div class="export-info">
+                                <div class="export-name">JSON</div>
+                                <div class="export-desc">JavaScript Object Notation — format universal pentru date structurate</div>
+                            </div>
+                            <button class="btn btn-secondary" id="btn-export-json">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+                                Descarca
+                            </button>
+                        </div>
+
+                        <!-- XML -->
+                        <div class="export-card">
+                            <div class="export-icon export-icon--orange">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><polyline points="16 18 22 12 16 6"/><polyline points="8 6 2 12 8 18"/><line x1="12" y1="2" x2="12" y2="22"/></svg>
+                            </div>
+                            <div class="export-info">
+                                <div class="export-name">XML</div>
+                                <div class="export-desc">Extensible Markup Language — format structurat pentru interoperabilitate</div>
+                            </div>
+                            <button class="btn btn-secondary" id="btn-export-xml">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+                                Descarca
+                            </button>
+                        </div>
+
+                    </div>
+                </div>
+            </section>
+
+            <!-- ===== SECTIUNE IMPORT ===== -->
+            <section class="card">
+                <div class="card-header">
+                    <h2>
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" style="width:18px;height:18px;vertical-align:middle;margin-right:6px"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
+                        Import date
+                    </h2>
+                    <span class="topbar-subtitle">Incarca articole dintr-un fisier CSV, JSON sau XML</span>
+                </div>
+                <div class="card-body">
+
+                    <!-- Tab-uri format -->
+                    <div class="import-tabs">
+                        <button class="import-tab active" data-format="csv">CSV</button>
+                        <button class="import-tab" data-format="json">JSON</button>
+                        <button class="import-tab" data-format="xml">XML</button>
+                    </div>
+
+                    <!-- Instructiuni CSV -->
+                    <div class="format-info" id="info-csv">
+                        <strong>Format CSV asteptat (prima linie = header):</strong>
+                        <code class="code-block">name,category_id,quantity,min_threshold,last_checked
+Becuri LED,1,50,10,2026-01-15
+Ulei motor 5W40,2,8,5,2026-03-20
+Toner imprimanta,3,2,3,</code>
+                    </div>
+
+                    <!-- Instructiuni JSON -->
+                    <div class="format-info" id="info-json" style="display:none">
+                        <strong>Format JSON asteptat (array de obiecte):</strong>
+                        <code class="code-block">[
+  {
+    "name": "Becuri LED",
+    "category_id": 1,
+    "quantity": 50,
+    "min_threshold": 10,
+    "last_checked": "2026-01-15"
+  },
+  {
+    "name": "Ulei motor 5W40",
+    "category_id": 2,
+    "quantity": 8,
+    "min_threshold": 5,
+    "last_checked": null
+  }
+]</code>
+                    </div>
+
+                    <!-- Instructiuni XML -->
+                    <div class="format-info" id="info-xml" style="display:none">
+                        <strong>Format XML asteptat (element radacina: inventar):</strong>
+                        <code class="code-block">&lt;?xml version="1.0" encoding="UTF-8"?&gt;
+&lt;inventar&gt;
+  &lt;articol&gt;
+    &lt;nume&gt;Becuri LED&lt;/nume&gt;
+    &lt;categorie_id&gt;1&lt;/categorie_id&gt;
+    &lt;cantitate&gt;50&lt;/cantitate&gt;
+    &lt;prag_minim&gt;10&lt;/prag_minim&gt;
+    &lt;ultima_verificare&gt;2026-01-15&lt;/ultima_verificare&gt;
+  &lt;/articol&gt;
+&lt;/inventar&gt;</code>
+                    </div>
+
+                    <!-- Drop zone -->
+                    <div class="dropzone" id="dropzone">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" class="dropzone-icon"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
+                        <p class="dropzone-text">Trage fisierul aici sau <label for="input-file" class="dropzone-link">alege fisier</label></p>
+                        <p class="dropzone-sub" id="dropzone-format">Formate acceptate: .csv</p>
+                        <input type="file" id="input-file" accept=".csv" style="display:none">
+                    </div>
+
+                    <!-- Preview tabel -->
+                    <div id="import-preview" style="display:none">
+                        <div class="preview-header">
+                            <div class="preview-info">
+                                <span class="badge badge--ok" id="preview-count"></span>
+                                <span style="font-size:13px;color:var(--gray-600);margin-left:8px" id="preview-filename"></span>
+                            </div>
+                            <button class="btn btn-secondary" id="btn-reset-import" style="font-size:12px;padding:5px 10px">
+                                Schimba fisier
+                            </button>
+                        </div>
+                        <div class="table-wrapper" style="max-height:260px;overflow-y:auto">
+                            <table class="data-table" id="table-preview">
+                                <thead id="thead-preview"></thead>
+                                <tbody id="tbody-preview"></tbody>
+                            </table>
+                        </div>
+                        <div style="margin-top:16px;display:flex;justify-content:flex-end">
+                            <button class="btn btn-primary" id="btn-import-confirm">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg>
+                                Importa <span id="import-nr"></span> articole
+                            </button>
+                        </div>
+                    </div>
+
+                </div>
+            </section>
+
+            <!-- ===== LOG IMPORT ===== -->
+            <section class="card" id="card-log" style="display:none">
+                <div class="card-header">
+                    <h2>Rezultat import</h2>
+                    <button class="btn btn-secondary" id="btn-inchide-log" style="font-size:12px;padding:5px 10px">Inchide</button>
+                </div>
+                <div class="card-body" id="log-body"></div>
+            </section>
+
+        </div>
+    </main>
+
+    <!-- ===== TOAST ===== -->
+    <div class="toast-container" id="toast-container" aria-live="polite"></div>
+
+    <script src="js/app.js"></script>
+    <script src="js/import-export.js"></script>
+</body>
+</html>
