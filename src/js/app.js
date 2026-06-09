@@ -120,9 +120,10 @@ document.addEventListener('DOMContentLoaded', () => {
 
     /* Mobile menu toggle */
     const menuToggle = document.getElementById('menu-toggle');
-    const sidebar    = document.getElementById('sidebar');
+    const sidebar = document.getElementById('sidebar');
     if (menuToggle && sidebar) {
-        menuToggle.addEventListener('click', () => {
+        menuToggle.addEventListener('click', (e) => {
+            e.stopPropagation();
             sidebar.classList.toggle('open');
         });
 

@@ -1,0 +1,26 @@
+C4Component
+    title Diagrama de Componente (Level 3) - Backend API
+
+    Container_Boundary(api, "Backend API") {
+        Component(router, "Router", "PHP", "Prelucrează cererile (ex. ?request=items) și deleagă execuția către controlerul potrivit.")
+        
+        Component(item_ctrl, "ItemController", "PHP", "Gestionează logica CRUD pentru Articole și Stocuri.")
+        Component(cat_ctrl, "CategoryController", "PHP", "Gestionează logica CRUD pentru Categorii.")
+        Component(notif_ctrl, "NotificationController", "PHP", "Calculează alertele și declanșează trimiterea de e-mailuri folosind funcția mail().")
+        Component(export_ctrl, "ExportController", "PHP / ImportController", "Se ocupă de parsarea și generarea formatelor CSV, JSON, XML.")
+        
+        Component(config, "Config & PDO", "PHP", "Stabilește și securizează conexiunea la baza de date.")
+    }
+
+    ContainerDb(db, "Bază de Date", "MySQL 8.0", "Stocare date")
+
+    Rel(router, item_ctrl, "Deleagă rutele /items")
+    Rel(router, cat_ctrl, "Deleagă rutele /categories")
+    Rel(router, notif_ctrl, "Deleagă rutele /notifications")
+    Rel(router, export_ctrl, "Deleagă rutele de import/export")
+
+    Rel(item_ctrl, config, "Folosește conexiunea")
+    Rel(cat_ctrl, config, "Folosește conexiunea")
+    Rel(notif_ctrl, config, "Folosește conexiunea")
+    
+    Rel(config, db, "Interogări securizate (Prepared Statements)", "SQL")

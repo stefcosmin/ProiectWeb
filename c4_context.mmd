@@ -1,0 +1,11 @@
+C4Context
+    title Diagrama de Context (Level 1) pentru StockPro
+
+    Person(admin, "Administrator / Utilizator", "Gestionează stocurile, consumabilele și piesele de schimb.")
+    
+    System(stockpro, "Sistemul StockPro", "Platformă software pentru evidența inventarului, generarea de statistici și notificări inteligente la epuizarea stocului.")
+
+    System_Ext(email_sys, "Sistem E-mail", "Sistemul intern de mail (ex. server SMTP local sau nativ PHP)")
+
+    Rel(admin, stockpro, "Folosește platforma pentru gestiune", "Browser Web")
+    Rel(stockpro, email_sys, "Trimite alerte de stoc și verificări periodice")

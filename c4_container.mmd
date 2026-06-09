@@ -1,0 +1,14 @@
+C4Container
+    title Diagrama de Containere (Level 2) pentru StockPro
+
+    Person(admin, "Administrator", "Utilizator final")
+
+    System_Boundary(c1, "Aplicația Web StockPro") {
+        Container(spa, "Aplicație Frontend (SPA)", "HTML5, CSS3, Vanilla JS", "Interfața grafică (UI) care oferă tabloul de bord, formularele CRUD și funcțiile de filtrare/export.")
+        Container(api, "Backend API", "PHP", "Interfața de programare (RESTful) care gestionează cererile, rutele (index.php) și regulile de business (ex. ItemController, NotificationController).")
+        ContainerDb(db, "Bază de Date", "MySQL 8.0", "Stochează informațiile persistente: categoriile, articolele, setările și detaliile de inventar.")
+    }
+
+    Rel(admin, spa, "Vizitează și interacționează", "HTTPS")
+    Rel(spa, api, "Face apeluri asincrone (AJAX/Fetch)", "JSON / HTTPS")
+    Rel(api, db, "Citește și scrie date", "SQL / PDO")
