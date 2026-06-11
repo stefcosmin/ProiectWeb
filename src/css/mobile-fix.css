@@ -1,0 +1,220 @@
+/* =============================================
+   StockPro — mobile-fix.css
+   Fix-uri pentru vizualizare pe mobil:
+   1. Previne scroll orizontal global
+   2. Tabele responsive cu scroll intern
+   3. Sidebar hamburger fix
+   4. Layout responsive imbunatatit
+   ============================================= */
+
+/* ---------- Previne scroll orizontal global ---------- */
+html, body {
+    overflow-x: hidden;
+    max-width: 100%;
+}
+
+.main-content {
+    overflow-x: hidden;
+    min-width: 0;
+}
+
+.page-content {
+    overflow-x: hidden;
+    min-width: 0;
+}
+
+/* ---------- Table wrapper — scroll DOAR inauntru ---------- */
+.table-wrapper {
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    max-width: 100%;
+}
+
+/* ---------- Card nu depaseste ecranul ---------- */
+.card {
+    max-width: 100%;
+    overflow: hidden;
+}
+
+/* =============================================
+   RESPONSIVE MOBIL (max 768px)
+   ============================================= */
+@media (max-width: 768px) {
+
+    /* Sidebar ascuns implicit pe mobil */
+    .sidebar {
+        transform: translateX(-100%);
+        z-index: 300;
+        transition: transform 0.25s ease;
+        box-shadow: none;
+    }
+
+    /* Sidebar deschis pe mobil */
+    .sidebar.open {
+        transform: translateX(0);
+        box-shadow: 4px 0 24px rgba(0, 0, 0, 0.18);
+    }
+
+    /* Overlay inchis sidebar pe mobil */
+    .sidebar-overlay {
+        display: none;
+        position: fixed;
+        inset: 0;
+        background: rgba(0, 0, 0, 0.4);
+        z-index: 299;
+    }
+
+    .sidebar-overlay.active {
+        display: block;
+    }
+
+    /* Main content ocupa tot ecranul */
+    .main-content {
+        margin-left: 0 !important;
+    }
+
+    /* Arata butonul hamburger */
+    .menu-toggle {
+        display: flex !important;
+    }
+
+    /* Page content padding mai mic */
+    .page-content {
+        padding: 12px !important;
+        gap: 16px !important;
+    }
+
+    /* Stat cards - 2 pe rand */
+    .stats-grid {
+        grid-template-columns: 1fr 1fr !important;
+        gap: 10px !important;
+    }
+
+    .stat-card {
+        padding: 14px 14px !important;
+    }
+
+    .stat-value {
+        font-size: 24px !important;
+    }
+
+    /* Dashboard grid - coloana unica */
+    .dashboard-grid {
+        grid-template-columns: 1fr !important;
+        gap: 16px !important;
+    }
+
+    /* Admin grid - coloana unica */
+    .admin-grid {
+        grid-template-columns: 1fr !important;
+    }
+
+    /* Grafice grid - coloana unica */
+    .grafice-grid {
+        grid-template-columns: 1fr !important;
+    }
+
+    /* Topbar compact */
+    .topbar {
+        padding: 0 12px !important;
+        gap: 10px !important;
+    }
+
+    .topbar-title h1 {
+        font-size: 15px !important;
+    }
+
+    /* Filtre bar - stivuite vertical */
+    .filtre-bar {
+        flex-direction: column !important;
+        gap: 8px !important;
+    }
+
+    .filtre-bar .form-control {
+        width: 100% !important;
+    }
+
+    /* Tabel articole pe mobil — ascunde coloanele mai putin importante */
+    .data-table th:nth-child(5),
+    .data-table td:nth-child(5),
+    .data-table th:nth-child(6),
+    .data-table td:nth-child(6) {
+        display: none;
+    }
+
+    /* Butoane actiuni in tabel mai mici */
+    .btn-table {
+        padding: 4px 7px !important;
+        font-size: 11px !important;
+    }
+
+    /* Categorii grid - 2 pe rand */
+    .categorii-grid {
+        grid-template-columns: repeat(2, 1fr) !important;
+    }
+
+    /* Export cards - stivuite */
+    .export-card {
+        flex-wrap: wrap !important;
+        gap: 10px !important;
+    }
+
+    /* Danger items - stivuite */
+    .danger-item {
+        flex-direction: column !important;
+        align-items: flex-start !important;
+        gap: 10px !important;
+    }
+
+    /* Modal mai mic pe mobil */
+    .modal {
+        max-width: calc(100vw - 32px) !important;
+        margin: 0 16px !important;
+    }
+
+    /* Form row - stivuite vertical */
+    .form-row {
+        flex-direction: column !important;
+        gap: 0 !important;
+    }
+
+    /* Toast jos centrat */
+    .toast-container {
+        bottom: 16px !important;
+        right: 16px !important;
+        left: 16px !important;
+    }
+
+    .toast {
+        max-width: 100% !important;
+    }
+}
+
+/* =============================================
+   RESPONSIVE TABLETA (max 480px)
+   ============================================= */
+@media (max-width: 480px) {
+
+    /* Stat cards - coloana unica */
+    .stats-grid {
+        grid-template-columns: 1fr !important;
+    }
+
+    /* Ascunde mai multe coloane din tabel pe ecrane foarte mici */
+    .data-table th:nth-child(3),
+    .data-table td:nth-child(3) {
+        display: none;
+    }
+
+    /* Card header stivuit */
+    .card-header {
+        flex-direction: column !important;
+        align-items: flex-start !important;
+        gap: 4px !important;
+    }
+
+    /* Topbar actions */
+    .topbar-actions .btn span {
+        display: none;
+    }
+}
