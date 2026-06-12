@@ -1,17 +1,8 @@
-/* =============================================
-   StockPro — notificari.js
-   Pagina de notificari:
-   - alerte stoc epuizat / redus
-   - verificari restante (>30 zile)
-   - actiuni rapide: actualizeaza stoc / marcheaza verificat
-   ============================================= */
-
-/* ---------- State local ---------- */
-let toateArticolele  = [];
+let toateArticolele = [];
 let toateCategoriile = [];
-let idActiuneRapida  = null; /* id articol pentru modal actiune */
+let idActiuneRapida = null;
 
-/* ---------- Initializare ---------- */
+//init
 document.addEventListener('DOMContentLoaded', () => {
     incarcaDate();
 
@@ -24,7 +15,7 @@ document.addEventListener('DOMContentLoaded', () => {
     initModalVerificare();
 });
 
-/* ---------- Incarcare date ---------- */
+//Incarcare date
 async function incarcaDate() {
     try {
         const [notificari, articole, categorii] = await Promise.all([
@@ -33,11 +24,11 @@ async function incarcaDate() {
             apiFetch('?request=categories')
         ]);
 
-        toateArticolele  = articole  || [];
+        toateArticolele = articole || [];
         toateCategoriile = categorii || [];
 
         const depletion = notificari.depletion || [];
-        const periodic  = notificari.periodic  || [];
+        const periodic = notificari.periodic || [];
 
         afiseazaStats(depletion, periodic);
         randeazaStoc(depletion);
@@ -50,18 +41,18 @@ async function incarcaDate() {
     }
 }
 
-/* ---------- Statistici ---------- */
+//Statistici
 function afiseazaStats(depletion, periodic) {
     const epuizate = depletion.filter(a => a.quantity <= 0);
-    const reduse   = depletion.filter(a => a.quantity > 0);
+    const reduse = depletion.filter(a => a.quantity > 0);
 
-    document.getElementById('val-epuizat').textContent   = epuizate.length;
-    document.getElementById('val-redus').textContent     = reduse.length;
+    document.getElementById('val-epuizat').textContent = epuizate.length;
+    document.getElementById('val-redus').textContent = reduse.length;
     document.getElementById('val-verificari').textContent = periodic.length;
-    document.getElementById('val-total').textContent     = depletion.length + periodic.length;
+    document.getElementById('val-total').textContent = depletion.length + periodic.length;
 }
 
-/* ---------- Tabel alerte stoc ---------- */
+//Tabel alerte stoc
 function randeazaStoc(depletion) {
     const tbody = document.getElementById('tbody-stoc');
     const label = document.getElementById('label-stoc');
@@ -70,7 +61,7 @@ function randeazaStoc(depletion) {
         label.textContent = depletion.length + ' alert' + (depletion.length === 1 ? 'ă' : 'e');
     }
 
-    /* Construim map categorii */
+    //map categorii
     const catMap = {};
     toateCategoriile.forEach(c => { catMap[c.id] = c.name; });
 
@@ -89,7 +80,7 @@ function randeazaStoc(depletion) {
     }
 
     tbody.innerHTML = depletion.map(art => {
-        const stare   = getStareBadge(art.quantity, art.min_threshold);
+        const stare = getStareBadge(art.quantity, art.min_threshold);
         const catName = escapeHtml(catMap[art.category_id] || '—');
 
         return `
@@ -119,7 +110,7 @@ function randeazaStoc(depletion) {
     }).join('');
 }
 
-/* ---------- Tabel verificari restante ---------- */
+//Tabel verificari restante
 function randeazaVerificari(periodic) {
     const tbody = document.getElementById('tbody-verificari');
     const label = document.getElementById('label-verificari');
@@ -150,18 +141,18 @@ function randeazaVerificari(periodic) {
     tbody.innerHTML = periodic.map(art => {
         const catName = escapeHtml(catMap[art.category_id] || '—');
 
-        /* Calculam zilele de la ultima verificare */
+        //calcul zile de la ultima verificare
         let zileText = '—';
-        let zileCls  = 'zile-badge--warning';
+        let zileCls = 'zile-badge--warning';
 
         if (art.last_checked) {
             const dataVerif = new Date(art.last_checked);
-            const diff      = Math.floor((azi - dataVerif) / (1000 * 60 * 60 * 24));
+            const diff = Math.floor((azi - dataVerif) / (1000 * 60 * 60 * 24));
             zileText = diff + ' zile';
-            zileCls  = diff > 60 ? 'zile-badge--danger' : 'zile-badge--warning';
+            zileCls = diff > 60 ? 'zile-badge--danger' : 'zile-badge--warning';
         } else {
             zileText = 'Niciodată';
-            zileCls  = 'zile-badge--danger';
+            zileCls = 'zile-badge--danger';
         }
 
         const dataAfisata = art.last_checked
@@ -194,12 +185,12 @@ function randeazaVerificari(periodic) {
     }).join('');
 }
 
-/* ---------- Modal actualizare stoc ---------- */
+//Modal actualizare stoc
 function initModalCantitate() {
-    const modal    = document.getElementById('modal-cantitate');
+    const modal = document.getElementById('modal-cantitate');
     const btnClose = document.getElementById('cantitate-close');
-    const btnAnul  = document.getElementById('cantitate-anuleaza');
-    const btnSalv  = document.getElementById('cantitate-salveaza');
+    const btnAnul = document.getElementById('cantitate-anuleaza');
+    const btnSalv = document.getElementById('cantitate-salveaza');
 
     const inchide = () => {
         modal.style.display = 'none';
@@ -214,16 +205,16 @@ function initModalCantitate() {
 
 function deschideActualizareStoc(id, nume, cantitateActuala) {
     idActiuneRapida = id;
-    document.getElementById('cantitate-nume').textContent     = nume;
-    document.getElementById('input-cantitate-noua').value     = cantitateActuala;
+    document.getElementById('cantitate-nume').textContent = nume;
+    document.getElementById('input-cantitate-noua').value = cantitateActuala;
     document.getElementById('error-cantitate-noua').textContent = '';
-    document.getElementById('modal-cantitate').style.display  = 'flex';
+    document.getElementById('modal-cantitate').style.display = 'flex';
     setTimeout(() => document.getElementById('input-cantitate-noua').focus(), 50);
 }
 
 async function salveazaCantitate() {
     const valoare = document.getElementById('input-cantitate-noua').value;
-    const eroare  = document.getElementById('error-cantitate-noua');
+    const eroare = document.getElementById('error-cantitate-noua');
 
     if (valoare === '' || isNaN(valoare) || Number(valoare) < 0) {
         eroare.textContent = 'Introdu o cantitate validă (număr pozitiv).';
@@ -232,8 +223,8 @@ async function salveazaCantitate() {
 
     eroare.textContent = '';
 
-    /* Gasim articolul complet pentru a trimite toate campurile la PUT */
-    const art = toateArticolele.find(a => a.id === idActiuneRapida);
+    //gasim articolul complet pentru a trimite toate campurile la PUT
+    const art = toateArticolele.find(a => a.id == idActiuneRapida);
     if (!art) return;
 
     const btnSalv = document.getElementById('cantitate-salveaza');
@@ -242,11 +233,11 @@ async function salveazaCantitate() {
 
     try {
         await apiFetch('?request=items/' + idActiuneRapida, 'PUT', {
-            name:          art.name,
-            category_id:   art.category_id,
-            quantity:      Number(valoare),
+            name: art.name,
+            category_id: art.category_id,
+            quantity: Number(valoare),
             min_threshold: art.min_threshold,
-            last_checked:  art.last_checked || null
+            last_checked: art.last_checked || null
         });
 
         showToast('Stoc actualizat cu succes!', 'success');
@@ -262,12 +253,12 @@ async function salveazaCantitate() {
     }
 }
 
-/* ---------- Modal marcare verificat ---------- */
+//Modal marcare verificat
 function initModalVerificare() {
-    const modal    = document.getElementById('modal-verificare');
+    const modal = document.getElementById('modal-verificare');
     const btnClose = document.getElementById('verificare-close');
-    const btnAnul  = document.getElementById('verificare-anuleaza');
-    const btnSalv  = document.getElementById('verificare-salveaza');
+    const btnAnul = document.getElementById('verificare-anuleaza');
+    const btnSalv = document.getElementById('verificare-salveaza');
 
     const inchide = () => {
         modal.style.display = 'none';
@@ -284,7 +275,7 @@ function deschideMarcarVerificat(id, nume) {
     idActiuneRapida = id;
     document.getElementById('verificare-nume').textContent = nume;
 
-    /* Data de azi ca default */
+    //data de azi ca default
     const azi = new Date().toISOString().split('T')[0];
     document.getElementById('input-data-verificare').value = azi;
     document.getElementById('modal-verificare').style.display = 'flex';
@@ -297,7 +288,7 @@ async function salveazaVerificare() {
         return;
     }
 
-    const art = toateArticolele.find(a => a.id === idActiuneRapida);
+    const art = toateArticolele.find(a => a.id == idActiuneRapida);
     if (!art) return;
 
     const btnSalv = document.getElementById('verificare-salveaza');
@@ -306,11 +297,11 @@ async function salveazaVerificare() {
 
     try {
         await apiFetch('?request=items/' + idActiuneRapida, 'PUT', {
-            name:          art.name,
-            category_id:   art.category_id,
-            quantity:      art.quantity,
+            name: art.name,
+            category_id: art.category_id,
+            quantity: art.quantity,
             min_threshold: art.min_threshold,
-            last_checked:  data
+            last_checked: data
         });
 
         showToast('Verificare înregistrată!', 'success');
@@ -326,7 +317,7 @@ async function salveazaVerificare() {
     }
 }
 
-/* ---------- Badge nav ---------- */
+//Badge nav
 function actualizeazaBadgeNav(depletion, periodic) {
     const badge = document.getElementById('nav-badge');
     if (!badge) return;

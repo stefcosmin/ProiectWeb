@@ -1,19 +1,9 @@
-/* =============================================
-   StockPro — categorii.js
-   CRUD complet pentru categorii:
-   - listare + cautare
-   - adaugare (modal)
-   - editare (modal)
-   - stergere (confirmare)
-   ============================================= */
+let toateCategoriilele = [];   //lista completa din API
+let toateArticolele = [];   //pentru a numara articole per categorie
+let idEditare = null; //id-ul categoriei in curs de editare
+let idStergere = null; //id-ul categoriei de sters
 
-/* ---------- State local ---------- */
-let toateCategoriilele = [];   /* lista completa din API */
-let toateArticolele    = [];   /* pentru a numara articole per categorie */
-let idEditare          = null; /* id-ul categoriei in curs de editare */
-let idStergere         = null; /* id-ul categoriei de sters */
-
-/* ---------- Initializare ---------- */
+//init
 document.addEventListener('DOMContentLoaded', () => {
     incarcaDate();
     initModal();
@@ -21,7 +11,7 @@ document.addEventListener('DOMContentLoaded', () => {
     initDeleteModal();
 });
 
-/* ---------- Incarcare date din API ---------- */
+//incarcare date din API
 async function incarcaDate() {
     try {
         const [categorii, articole] = await Promise.all([
@@ -30,7 +20,7 @@ async function incarcaDate() {
         ]);
 
         toateCategoriilele = categorii || [];
-        toateArticolele    = articole  || [];
+        toateArticolele = articole || [];
 
         afiseazaStats();
         randeazaTabel(toateCategoriilele);
@@ -42,28 +32,28 @@ async function incarcaDate() {
     }
 }
 
-/* ---------- Statistici sus ---------- */
+//statistici sus
 function afiseazaStats() {
-    /* Total categorii */
+    //total categorii
     const elTotal = document.getElementById('val-total');
     if (elTotal) elTotal.textContent = toateCategoriilele.length;
 
-    /* Total articole */
+    //total articole
     const elArticole = document.getElementById('val-articole');
     if (elArticole) elArticole.textContent = toateArticolele.length;
 
-    /* Categoria cu cele mai multe articole */
+    //categoria cu cele mai multe articole
     const elTop = document.getElementById('val-top');
     if (elTop) {
         if (toateCategoriilele.length === 0) {
             elTop.textContent = '—';
         } else {
-            /* Construim map categorie_id -> count */
+            //construim map categorie_id -> count
             const countMap = {};
             toateArticolele.forEach(a => {
                 countMap[a.category_id] = (countMap[a.category_id] || 0) + 1;
             });
-            /* Gasim categoria cu max articole */
+            //gasim categoria cu max articole
             let maxCat = null;
             let maxCount = 0;
             toateCategoriilele.forEach(c => {
@@ -75,9 +65,9 @@ function afiseazaStats() {
     }
 }
 
-/* ---------- Randare tabel ---------- */
+// Randare tabel
 function randeazaTabel(categorii) {
-    const tbody     = document.getElementById('tbody-categorii');
+    const tbody = document.getElementById('tbody-categorii');
     const labelCount = document.getElementById('label-count');
 
     if (labelCount) {
@@ -98,7 +88,7 @@ function randeazaTabel(categorii) {
         return;
     }
 
-    /* Construim map categorie_id -> count articole */
+    //construim map categorie_id -> count articole
     const countMap = {};
     toateArticolele.forEach(a => {
         countMap[a.category_id] = (countMap[a.category_id] || 0) + 1;
@@ -151,7 +141,7 @@ function randeazaTabel(categorii) {
     }).join('');
 }
 
-/* ---------- Cautare ---------- */
+//cautare
 function initSearch() {
     const input = document.getElementById('input-search');
     if (!input) return;
@@ -169,15 +159,15 @@ function initSearch() {
     });
 }
 
-/* ---------- Modal Adauga / Editeaza ---------- */
+//modal adauga/editeaza
 function initModal() {
-    const overlay   = document.getElementById('modal-overlay');
+    const overlay = document.getElementById('modal-overlay');
     const btnAdauga = document.getElementById('btn-adauga');
-    const btnClose  = document.getElementById('modal-close');
-    const btnAnul   = document.getElementById('btn-anuleaza');
-    const btnSalv   = document.getElementById('btn-salveaza');
+    const btnClose = document.getElementById('modal-close');
+    const btnAnul = document.getElementById('btn-anuleaza');
+    const btnSalv = document.getElementById('btn-salveaza');
 
-    /* Deschide modal pentru adaugare */
+    //deschide modal pentru adaugare
     btnAdauga.addEventListener('click', () => {
         idEditare = null;
         document.getElementById('modal-title').textContent = 'Categorie nouă';
@@ -188,7 +178,7 @@ function initModal() {
         setTimeout(() => document.getElementById('input-nume').focus(), 50);
     });
 
-    /* Inchide modal */
+    //inchide modal
     const inchideModal = () => {
         overlay.style.display = 'none';
         idEditare = null;
@@ -197,21 +187,21 @@ function initModal() {
     btnClose.addEventListener('click', inchideModal);
     btnAnul.addEventListener('click', inchideModal);
 
-    /* Inchide la click pe overlay */
+    //inchide la click pe overlay
     overlay.addEventListener('click', (e) => {
         if (e.target === overlay) inchideModal();
     });
 
-    /* Enter in input = salveaza */
+    //enter in input = salveaza
     document.getElementById('input-nume').addEventListener('keydown', (e) => {
         if (e.key === 'Enter') btnSalv.click();
     });
 
-    /* Salveaza */
+    //salveaza
     btnSalv.addEventListener('click', salveaza);
 }
 
-/* Deschide modal pentru editare (apelat din tabel) */
+//deschide modal pentru editare (apelat din tabel)
 function deschideEditeaza(id, numeActual) {
     idEditare = id;
     document.getElementById('modal-title').textContent = 'Editează categorie';
@@ -222,13 +212,13 @@ function deschideEditeaza(id, numeActual) {
     setTimeout(() => document.getElementById('input-nume').focus(), 50);
 }
 
-/* Salveaza (adauga sau editeaza) */
+//salveaza (adauga sau editeaza)
 async function salveaza() {
     const input = document.getElementById('input-nume');
     const eroare = document.getElementById('error-nume');
     const nume = input.value.trim();
 
-    /* Validare */
+    //validare
     if (!nume) {
         eroare.textContent = 'Numele categoriei este obligatoriu.';
         input.focus();
@@ -240,7 +230,7 @@ async function salveaza() {
         return;
     }
 
-    /* Verificam sa nu existe deja aceeasi categorie */
+    //verificam sa nu existe deja aceeasi categorie
     const duplicat = toateCategoriilele.find(c =>
         c.name.toLowerCase() === nume.toLowerCase() && c.id !== idEditare
     );
@@ -258,18 +248,18 @@ async function salveaza() {
 
     try {
         if (idEditare) {
-            /* PUT - editare */
+            //pUT - editare
             await apiFetch('?request=categories/' + idEditare, 'PUT', { name: nume });
             showToast('Categorie actualizată cu succes!', 'success');
         } else {
-            /* POST - adaugare */
+            //pOST - adaugare
             await apiFetch('?request=categories', 'POST', { name: nume });
             showToast('Categorie adăugată cu succes!', 'success');
         }
 
         document.getElementById('modal-overlay').style.display = 'none';
         idEditare = null;
-        await incarcaDate(); /* Reincarca datele */
+        await incarcaDate(); //reincarca datele
 
     } catch (err) {
         showToast('Eroare: ' + err.message, 'error');
@@ -279,12 +269,12 @@ async function salveaza() {
     }
 }
 
-/* ---------- Modal Stergere ---------- */
+//modal stergere
 function initDeleteModal() {
-    const modal   = document.getElementById('modal-delete');
+    const modal = document.getElementById('modal-delete');
     const btnClose = document.getElementById('delete-close');
-    const btnAnul  = document.getElementById('delete-anuleaza');
-    const btnConf  = document.getElementById('delete-confirma');
+    const btnAnul = document.getElementById('delete-anuleaza');
+    const btnConf = document.getElementById('delete-confirma');
 
     const inchide = () => {
         modal.style.display = 'none';
@@ -298,14 +288,14 @@ function initDeleteModal() {
     btnConf.addEventListener('click', sterge);
 }
 
-/* Deschide modal de confirmare stergere (apelat din tabel) */
+//deschide modal de confirmare stergere (apelat din tabel)
 function deschideStergere(id, nume) {
     idStergere = id;
     document.getElementById('delete-name').textContent = '"' + nume + '"';
     document.getElementById('modal-delete').style.display = 'flex';
 }
 
-/* Sterge categoria */
+//sterge categoria
 async function sterge() {
     if (!idStergere) return;
 
@@ -328,7 +318,7 @@ async function sterge() {
     }
 }
 
-/* ---------- Badge notificari in sidebar ---------- */
+//badge notificari in sidebar
 async function actualizeazaBadgeNotificari() {
     try {
         const notif = await apiFetch('?request=notifications');
@@ -340,6 +330,6 @@ async function actualizeazaBadgeNotificari() {
             badge.style.display = 'inline-flex';
         }
     } catch (_) {
-        /* Ignoram eroarea - badge-ul ramane ascuns */
+        //ignoram eroarea - badge-ul ramane ascuns
     }
 }

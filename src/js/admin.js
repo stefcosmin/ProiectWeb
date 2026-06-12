@@ -1,16 +1,6 @@
-/* =============================================
-   StockPro — admin.js
-   Pagina de administrare:
-   - sumar sistem (articole, categorii, alerte)
-   - verificare status API si DB
-   - configurare notificari (interval, email, frecventa)
-   - actiuni periculoase cu confirmare scrisa
-   ============================================= */
-
-/* ---------- Actiunea curenta in zona periculoasa ---------- */
 let actiuneCurenta = null;
 
-/* ---------- Initializare ---------- */
+//Initializare
 document.addEventListener('DOMContentLoaded', () => {
     incarcaSumar();
     verificaStatus();
@@ -20,7 +10,7 @@ document.addEventListener('DOMContentLoaded', () => {
     initModalConfirmare();
 });
 
-/* ---------- Sumar sistem ---------- */
+//sumar
 async function incarcaSumar() {
     try {
         const [articole, categorii, notificari] = await Promise.all([
@@ -29,13 +19,13 @@ async function incarcaSumar() {
             apiFetch('?request=notifications')
         ]);
 
-        document.getElementById('val-articole').textContent  = articole.length;
+        document.getElementById('val-articole').textContent = articole.length;
         document.getElementById('val-categorii').textContent = categorii.length;
 
         const totalAlerte = (notificari.depletion || []).length + (notificari.periodic || []).length;
         document.getElementById('val-alerte').textContent = totalAlerte;
 
-        /* Badge nav */
+        //badge nav
         const badge = document.getElementById('nav-badge');
         if (badge && totalAlerte > 0) {
             badge.textContent = totalAlerte;
@@ -47,16 +37,16 @@ async function incarcaSumar() {
     }
 }
 
-/* ---------- Verificare status API si DB ---------- */
+//verificare status API
 async function verificaStatus() {
     const elApi = document.getElementById('status-api');
-    const elDb  = document.getElementById('status-db');
+    const elDb = document.getElementById('status-db');
 
     try {
-        /* Incercam sa apelam API-ul */
+        //apelare api
         await apiFetch('?request=categories');
 
-        /* API online */
+        //aPI online
         if (elApi) {
             elApi.innerHTML = `
                 <span class="status-online">
@@ -65,7 +55,7 @@ async function verificaStatus() {
                 </span>`;
         }
 
-        /* Daca API merge, DB merge si el */
+        //daca API merge, DB merge si el
         if (elDb) {
             elDb.innerHTML = `
                 <span class="status-online">
@@ -75,7 +65,7 @@ async function verificaStatus() {
         }
 
     } catch (err) {
-        /* API offline */
+        //api offline
         if (elApi) {
             elApi.innerHTML = `
                 <span class="status-offline">
@@ -93,10 +83,7 @@ async function verificaStatus() {
     }
 }
 
-/* =============================================
-   CONFIGURARE NOTIFICARI
-   Salvam in localStorage (nu avem endpoint dedicat)
-   ============================================= */
+//configurare notificari
 const CONFIG_KEY = 'stockpro_config';
 
 function incarcaConfig() {
@@ -106,174 +93,172 @@ function incarcaConfig() {
     try {
         const cfg = JSON.parse(salvat);
         if (cfg.zileVerificare) document.getElementById('input-zile-verificare').value = cfg.zileVerificare;
-        if (cfg.email)          document.getElementById('input-email').value          = cfg.email;
-        if (cfg.frecventa)      document.getElementById('input-frecventa').value      = cfg.frecventa;
-    } catch (_) { /* ignoram */ }
-}
-
-function initConfig() {
-    document.getElementById('btn-salveaza-config').addEventListener('click', () => {
-        const zile      = document.getElementById('input-zile-verificare').value;
-        const email     = document.getElementById('input-email').value.trim();
-        const frecventa = document.getElementById('input-frecventa').value;
-
-        /* Validare */
-        if (!zile || Number(zile) < 1) {
-            showToast('Intervalul de verificare trebuie să fie cel puțin 1 zi.', 'error');
-            return;
-        }
-
-        if (email && !email.includes('@')) {
-            showToast('Adresa de email nu este validă.', 'error');
-            return;
-        }
-
-        /* Salvam in localStorage */
-        const cfg = { zileVerificare: Number(zile), email, frecventa };
-        localStorage.setItem(CONFIG_KEY, JSON.stringify(cfg));
-
-        showToast('Configurare salvată cu succes!', 'success');
-    });
-}
-
-/* =============================================
-   ZONA PERICULOASA
-   ============================================= */
-function initDangerZone() {
-    document.getElementById('btn-reset-stoc').addEventListener('click', () => {
-        actiuneCurenta = 'reset-stoc';
-        deschideConfirmare(
-            'Resetează stocurile',
-            'Această acțiune va seta cantitatea tuturor articolelor la 0. Articolele și categoriile vor rămâne. Acțiunea nu poate fi anulată!'
-        );
-    });
-
-    document.getElementById('btn-sterge-articole').addEventListener('click', () => {
-        actiuneCurenta = 'sterge-articole';
-        deschideConfirmare(
-            'Șterge toate articolele',
-            'Această acțiune va șterge permanent toate articolele din inventar. Categoriile vor rămâne intacte. Acțiunea nu poate fi anulată!'
-        );
-    });
-
-    document.getElementById('btn-reset-total').addEventListener('click', () => {
-        actiuneCurenta = 'reset-total';
-        deschideConfirmare(
-            'Reset complet inventar',
-            'Această acțiune va șterge permanent TOATE articolele și TOATE categoriile din inventar. Acțiunea este ireversibilă!'
-        );
-    });
-}
-
-/* ---------- Modal confirmare ---------- */
-function initModalConfirmare() {
-    const modal     = document.getElementById('modal-confirmare');
-    const btnClose  = document.getElementById('confirmare-close');
-    const btnAnul   = document.getElementById('confirmare-anuleaza');
-    const btnOk     = document.getElementById('confirmare-ok');
-    const inputConf = document.getElementById('input-confirmare');
-
-    const inchide = () => {
-        modal.style.display  = 'none';
-        inputConf.value      = '';
-        btnOk.disabled       = true;
-        actiuneCurenta       = null;
-    };
-
-    btnClose.addEventListener('click', inchide);
-    btnAnul.addEventListener('click', inchide);
-    modal.addEventListener('click', (e) => { if (e.target === modal) inchide(); });
-
-    /* Activeaza butonul doar daca scrie CONFIRM */
-    inputConf.addEventListener('input', () => {
-        btnOk.disabled = inputConf.value.trim() !== 'CONFIRM';
-    });
-
-    btnOk.addEventListener('click', executeazaActiune);
-}
-
-function deschideConfirmare(titlu, text) {
-    document.getElementById('modal-confirmare-titlu').textContent = titlu;
-    document.getElementById('modal-confirmare-text').textContent  = text;
-    document.getElementById('input-confirmare').value             = '';
-    document.getElementById('confirmare-ok').disabled             = true;
-    document.getElementById('modal-confirmare').style.display     = 'flex';
-    setTimeout(() => document.getElementById('input-confirmare').focus(), 50);
-}
-
-/* Executa actiunea periculoasa confirmata */
-async function executeazaActiune() {
-    const btnOk = document.getElementById('confirmare-ok');
-    btnOk.disabled  = true;
-    btnOk.textContent = 'Se procesează...';
-
-    try {
-        if (actiuneCurenta === 'reset-stoc') {
-            await resetStocuri();
-
-        } else if (actiuneCurenta === 'sterge-articole') {
-            await stergeToateArticolele();
-
-        } else if (actiuneCurenta === 'reset-total') {
-            await resetTotal();
-        }
-
-        document.getElementById('modal-confirmare').style.display = 'none';
-        actiuneCurenta = null;
-        await incarcaSumar();
-
-    } catch (err) {
-        showToast('Eroare: ' + err.message, 'error');
-    } finally {
-        btnOk.disabled    = false;
-        btnOk.textContent = 'Confirmă';
+        if (cfg.email) document.getElementById('input-email').value = cfg.email;
+        if (cfg.frecventa) document.getElementById('input-frecventa').value = cfg.frecventa;
+    } catch (_) { //ignoram }
     }
-}
 
-/* ---------- Actiuni concrete ---------- */
+    function initConfig() {
+        document.getElementById('btn-salveaza-config').addEventListener('click', () => {
+            const zile = document.getElementById('input-zile-verificare').value;
+            const email = document.getElementById('input-email').value.trim();
+            const frecventa = document.getElementById('input-frecventa').value;
 
-/** Seteaza cantitatea tuturor articolelor la 0 via PUT individual */
-async function resetStocuri() {
-    const articole = await apiFetch('?request=items');
+            //validare
+            if (!zile || Number(zile) < 1) {
+                showToast('Intervalul de verificare trebuie să fie cel puțin 1 zi.', 'error');
+                return;
+            }
 
-    /* Actualizam fiecare articol cu quantity = 0 */
-    for (const art of articole) {
-        await apiFetch('?request=items/' + art.id, 'PUT', {
-            name:          art.name,
-            category_id:   art.category_id,
-            quantity:      0,
-            min_threshold: art.min_threshold,
-            last_checked:  art.last_checked || null
+            if (email && !email.includes('@')) {
+                showToast('Adresa de email nu este validă.', 'error');
+                return;
+            }
+
+            //salvare local storage
+            const cfg = { zileVerificare: Number(zile), email, frecventa };
+            localStorage.setItem(CONFIG_KEY, JSON.stringify(cfg));
+
+            showToast('Configurare salvată cu succes!', 'success');
         });
     }
 
-    showToast('Stocurile au fost resetate la 0!', 'success');
-}
+    //zona stergere din db
+    function initDangerZone() {
+        document.getElementById('btn-reset-stoc').addEventListener('click', () => {
+            actiuneCurenta = 'reset-stoc';
+            deschideConfirmare(
+                'Resetează stocurile',
+                'Această acțiune va seta cantitatea tuturor articolelor la 0. Articolele și categoriile vor rămâne. Acțiunea nu poate fi anulată!'
+            );
+        });
 
-/** Sterge toate articolele via DELETE individual */
-async function stergeToateArticolele() {
-    const articole = await apiFetch('?request=items');
+        document.getElementById('btn-sterge-articole').addEventListener('click', () => {
+            actiuneCurenta = 'sterge-articole';
+            deschideConfirmare(
+                'Șterge toate articolele',
+                'Această acțiune va șterge permanent toate articolele din inventar. Categoriile vor rămâne intacte. Acțiunea nu poate fi anulată!'
+            );
+        });
 
-    for (const art of articole) {
-        await apiFetch('?request=items/' + art.id, 'DELETE');
+        document.getElementById('btn-reset-total').addEventListener('click', () => {
+            actiuneCurenta = 'reset-total';
+            deschideConfirmare(
+                'Reset complet inventar',
+                'Această acțiune va șterge permanent TOATE articolele și TOATE categoriile din inventar. Acțiunea este ireversibilă!'
+            );
+        });
     }
 
-    showToast('Toate articolele au fost șterse!', 'success');
-}
+    //modal confirmare
+    function initModalConfirmare() {
+        const modal = document.getElementById('modal-confirmare');
+        const btnClose = document.getElementById('confirmare-close');
+        const btnAnul = document.getElementById('confirmare-anuleaza');
+        const btnOk = document.getElementById('confirmare-ok');
+        const inputConf = document.getElementById('input-confirmare');
 
-/** Sterge toate articolele si toate categoriile */
-async function resetTotal() {
-    /* Mai intai articolele (foreign key) */
-    const articole = await apiFetch('?request=items');
-    for (const art of articole) {
-        await apiFetch('?request=items/' + art.id, 'DELETE');
+        const inchide = () => {
+            modal.style.display = 'none';
+            inputConf.value = '';
+            btnOk.disabled = true;
+            actiuneCurenta = null;
+        };
+
+        btnClose.addEventListener('click', inchide);
+        btnAnul.addEventListener('click', inchide);
+        modal.addEventListener('click', (e) => { if (e.target === modal) inchide(); });
+
+        //activeaza butonul doar daca scrie CONFIRM
+        inputConf.addEventListener('input', () => {
+            btnOk.disabled = inputConf.value.trim() !== 'CONFIRM';
+        });
+
+        btnOk.addEventListener('click', executeazaActiune);
     }
 
-    /* Apoi categoriile */
-    const categorii = await apiFetch('?request=categories');
-    for (const cat of categorii) {
-        await apiFetch('?request=categories/' + cat.id, 'DELETE');
+    function deschideConfirmare(titlu, text) {
+        document.getElementById('modal-confirmare-titlu').textContent = titlu;
+        document.getElementById('modal-confirmare-text').textContent = text;
+        document.getElementById('input-confirmare').value = '';
+        document.getElementById('confirmare-ok').disabled = true;
+        document.getElementById('modal-confirmare').style.display = 'flex';
+        setTimeout(() => document.getElementById('input-confirmare').focus(), 50);
     }
 
-    showToast('Inventarul a fost resetat complet!', 'success');
-}
+    //executa actiunea periculoasa confirmata
+    async function executeazaActiune() {
+        const btnOk = document.getElementById('confirmare-ok');
+        btnOk.disabled = true;
+        btnOk.textContent = 'Se procesează...';
+
+        try {
+            if (actiuneCurenta === 'reset-stoc') {
+                await resetStocuri();
+
+            } else if (actiuneCurenta === 'sterge-articole') {
+                await stergeToateArticolele();
+
+            } else if (actiuneCurenta === 'reset-total') {
+                await resetTotal();
+            }
+
+            document.getElementById('modal-confirmare').style.display = 'none';
+            actiuneCurenta = null;
+            await incarcaSumar();
+
+        } catch (err) {
+            showToast('Eroare: ' + err.message, 'error');
+        } finally {
+            btnOk.disabled = false;
+            btnOk.textContent = 'Confirmă';
+        }
+    }
+
+    //actiuni concrete
+
+    //seteaza cantitatea tuturor articolelor la 0 via PUT individual
+    async function resetStocuri() {
+        const articole = await apiFetch('?request=items');
+
+        //actualizam fiecare articol cu quantity = 0
+        for (const art of articole) {
+            await apiFetch('?request=items/' + art.id, 'PUT', {
+                name: art.name,
+                category_id: art.category_id,
+                quantity: 0,
+                min_threshold: art.min_threshold,
+                last_checked: art.last_checked || null
+            });
+        }
+
+        showToast('Stocurile au fost resetate la 0!', 'success');
+    }
+
+    //sterge toate articolele via DELETE individual
+    async function stergeToateArticolele() {
+        const articole = await apiFetch('?request=items');
+
+        for (const art of articole) {
+            await apiFetch('?request=items/' + art.id, 'DELETE');
+        }
+
+        showToast('Toate articolele au fost șterse!', 'success');
+    }
+
+    //sterge toate articolele si toate categoriile
+    async function resetTotal() {
+        //mai intai articolele (foreign key)
+        const articole = await apiFetch('?request=items');
+        for (const art of articole) {
+            await apiFetch('?request=items/' + art.id, 'DELETE');
+        }
+
+        //apoi categoriile
+        const categorii = await apiFetch('?request=categories');
+        for (const cat of categorii) {
+            await apiFetch('?request=categories/' + cat.id, 'DELETE');
+        }
+
+        showToast('Inventarul a fost resetat complet!', 'success');
+    }

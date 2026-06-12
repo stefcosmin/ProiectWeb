@@ -1,17 +1,10 @@
-/* =============================================
-   StockPro — import-export.js
-   Export: CSV, JSON, XML
-   Import: CSV, JSON, XML cu preview si validare
-   Cerinta acoperita: import/export in formatele
-   CSV, JSON si XML (toate 3 directii)
-   ============================================= */
 
-/* ---------- State local ---------- */
-let formatImport = 'csv'; /* formatul curent selectat pentru import */
-let dateImport   = [];    /* articolele parsate din fisierul incarcat */
-let numeFisier   = '';    /* numele fisierului incarcat */
+//state local
+let formatImport = 'csv'; //formatul curent selectat pentru import
+let dateImport = [];    //articolele parsate din fisierul incarcat
+let numeFisier = '';    //numele fisierului incarcat
 
-/* ---------- Initializare ---------- */
+//initializare
 document.addEventListener('DOMContentLoaded', () => {
     initExport();
     initTabs();
@@ -20,53 +13,45 @@ document.addEventListener('DOMContentLoaded', () => {
     actualizeazaBadgeNotificari();
 });
 
-/* =============================================
-   EXPORT — CSV, JSON, XML
-   ============================================= */
 function initExport() {
-    document.getElementById('btn-export-csv').addEventListener('click',  () => exportDate('csv'));
+    document.getElementById('btn-export-csv').addEventListener('click', () => exportDate('csv'));
     document.getElementById('btn-export-json').addEventListener('click', () => exportDate('json'));
-    document.getElementById('btn-export-xml').addEventListener('click',  () => exportDate('xml'));
+    document.getElementById('btn-export-xml').addEventListener('click', () => exportDate('xml'));
 }
 
-/**
- * Exporta datele inventarului in formatul cerut.
- * CSV si JSON: apelate direct din API (endpoint-uri backend).
- * XML: generat client-side din datele primite via AJAX.
- * @param {'csv'|'json'|'xml'} format
- */
+//exporta datele inventarului in formatul cerut. CSV si JSON: apelate direct din API (endpoint-uri backend). XML: generat client-side din datele primite via AJAX.
 async function exportDate(format) {
     const btn = document.getElementById('btn-export-' + format);
-    btn.disabled    = true;
+    btn.disabled = true;
     btn.textContent = 'Se genereaza...';
 
     try {
         if (format === 'csv') {
-            /* Endpoint CSV existent pe backend */
-            const raspuns = await fetch('/api?request=export/csv');
+            //endpoint CSV existent pe backend
+            const raspuns = await fetch('/api/export/csv');
             if (!raspuns.ok) throw new Error('Eroare server la export CSV');
             const blob = await raspuns.blob();
             descarcaFisier(blob, 'inventar_' + dataAzi() + '.csv', 'text/csv');
 
         } else if (format === 'json') {
-            /* Endpoint JSON existent pe backend */
-            const raspuns = await fetch('/api?request=export/json');
+            //endpoint JSON existent pe backend
+            const raspuns = await fetch('/api/export/json');
             if (!raspuns.ok) throw new Error('Eroare server la export JSON');
             const blob = await raspuns.blob();
             descarcaFisier(blob, 'inventar_' + dataAzi() + '.json', 'application/json');
 
         } else if (format === 'xml') {
-            /* XML generat client-side din datele articolelor si categoriilor */
+            //XML generat client-side din datele articolelor si categoriilor
             const [articole, categorii] = await Promise.all([
                 apiFetch('?request=items'),
                 apiFetch('?request=categories')
             ]);
 
-            /* Construim map id -> name pentru categorii */
+            //construim map id -> name pentru categorii
             const catMap = {};
             categorii.forEach(c => { catMap[c.id] = c.name; });
 
-            const xml  = genereazaXML(articole, catMap);
+            const xml = genereazaXML(articole, catMap);
             const blob = new Blob([xml], { type: 'application/xml;charset=utf-8' });
             descarcaFisier(blob, 'inventar_' + dataAzi() + '.xml', 'application/xml');
         }
@@ -77,18 +62,12 @@ async function exportDate(format) {
         showToast('Eroare la export: ' + err.message, 'error');
         console.error('[Export ' + format + '] Eroare:', err);
     } finally {
-        btn.disabled    = false;
+        btn.disabled = false;
         btn.textContent = 'Descarca';
     }
 }
 
-/**
- * Genereaza un document XML valid W3C din lista de articole.
- * Structura: radacina <inventar>, elemente <articol>.
- * @param {Array} articole
- * @param {Object} catMap - map id -> name categorii
- * @returns {string} XML ca string
- */
+//genereaza un document XML valid W3C din lista de articole. Structura: radacina <inventar>, elemente <articol>.
 function genereazaXML(articole, catMap) {
     const linii = [
         '<?xml version="1.0" encoding="UTF-8"?>',
@@ -97,13 +76,13 @@ function genereazaXML(articole, catMap) {
 
     articole.forEach(art => {
         linii.push('  <articol>');
-        linii.push('    <id>'                + escapeXML(String(art.id))            + '</id>');
-        linii.push('    <nume>'              + escapeXML(art.name)                  + '</nume>');
-        linii.push('    <categorie>'         + escapeXML(catMap[art.category_id] || '') + '</categorie>');
-        linii.push('    <categorie_id>'      + escapeXML(String(art.category_id))   + '</categorie_id>');
-        linii.push('    <cantitate>'         + escapeXML(String(art.quantity))      + '</cantitate>');
-        linii.push('    <prag_minim>'        + escapeXML(String(art.min_threshold)) + '</prag_minim>');
-        linii.push('    <ultima_verificare>' + escapeXML(art.last_checked || '')    + '</ultima_verificare>');
+        linii.push('    <id>' + escapeXML(String(art.id)) + '</id>');
+        linii.push('    <nume>' + escapeXML(art.name) + '</nume>');
+        linii.push('    <categorie>' + escapeXML(catMap[art.category_id] || '') + '</categorie>');
+        linii.push('    <categorie_id>' + escapeXML(String(art.category_id)) + '</categorie_id>');
+        linii.push('    <cantitate>' + escapeXML(String(art.quantity)) + '</cantitate>');
+        linii.push('    <prag_minim>' + escapeXML(String(art.min_threshold)) + '</prag_minim>');
+        linii.push('    <ultima_verificare>' + escapeXML(art.last_checked || '') + '</ultima_verificare>');
         linii.push('  </articol>');
     });
 
@@ -111,30 +90,21 @@ function genereazaXML(articole, catMap) {
     return linii.join('\n');
 }
 
-/**
- * Escapeaza caracterele speciale XML pentru a preveni injectii.
- * @param {string} str
- * @returns {string}
- */
+//escapeaza caracterele speciale XML pentru a preveni injectii.
 function escapeXML(str) {
     return String(str || '')
-        .replace(/&/g,  '&amp;')
-        .replace(/</g,  '&lt;')
-        .replace(/>/g,  '&gt;')
-        .replace(/"/g,  '&quot;')
-        .replace(/'/g,  '&apos;');
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;')
+        .replace(/'/g, '&apos;');
 }
 
-/**
- * Declanseaza descarcarea unui fisier in browser via URL object.
- * @param {Blob} blob
- * @param {string} nume - numele fisierului descarcat
- * @param {string} tip  - MIME type
- */
+//declanseaza descarcarea unui fisier in browser via URL object.
 function descarcaFisier(blob, nume, tip) {
     const url = URL.createObjectURL(blob);
-    const a   = document.createElement('a');
-    a.href     = url;
+    const a = document.createElement('a');
+    a.href = url;
     a.download = nume;
     document.body.appendChild(a);
     a.click();
@@ -142,10 +112,7 @@ function descarcaFisier(blob, nume, tip) {
     URL.revokeObjectURL(url);
 }
 
-/**
- * Returneaza data curenta formatata YYYYMMDD pentru numele fisierului.
- * @returns {string}
- */
+//returneaza data curenta formatata YYYYMMDD pentru numele fisierului. @returns {string}
 function dataAzi() {
     const d = new Date();
     return d.getFullYear()
@@ -153,49 +120,43 @@ function dataAzi() {
         + String(d.getDate()).padStart(2, '0');
 }
 
-/* =============================================
-   IMPORT — Tab-uri format (CSV / JSON / XML)
-   ============================================= */
 function initTabs() {
     const tabs = document.querySelectorAll('.import-tab');
 
     tabs.forEach(tab => {
         tab.addEventListener('click', () => {
-            /* Activeaza tab-ul selectat */
+            //activeaza tab-ul selectat
             tabs.forEach(t => t.classList.remove('active'));
             tab.classList.add('active');
 
             formatImport = tab.dataset.format;
 
-            /* Afiseaza instructiunile pentru formatul ales */
-            document.getElementById('info-csv').style.display  = formatImport === 'csv'  ? 'block' : 'none';
+            //afiseaza instructiunile pentru formatul ales
+            document.getElementById('info-csv').style.display = formatImport === 'csv' ? 'block' : 'none';
             document.getElementById('info-json').style.display = formatImport === 'json' ? 'block' : 'none';
-            document.getElementById('info-xml').style.display  = formatImport === 'xml'  ? 'block' : 'none';
+            document.getElementById('info-xml').style.display = formatImport === 'xml' ? 'block' : 'none';
 
-            /* Actualizeaza filtrul file input */
+            //actualizeaza filtrul file input
             const inputFile = document.getElementById('input-file');
-            const subText   = document.getElementById('dropzone-format');
+            const subText = document.getElementById('dropzone-format');
 
-            inputFile.accept        = '.' + formatImport;
-            subText.textContent     = 'Formate acceptate: .' + formatImport;
+            inputFile.accept = '.' + formatImport;
+            subText.textContent = 'Formate acceptate: .' + formatImport;
 
-            /* Reseteaza preview daca era deschis */
+            //reseteaza preview daca era deschis
             resetImport();
         });
     });
 }
 
-/* =============================================
-   IMPORT — Dropzone (drag & drop + click)
-   ============================================= */
 function initDropzone() {
-    const dropzone  = document.getElementById('dropzone');
+    const dropzone = document.getElementById('dropzone');
     const inputFile = document.getElementById('input-file');
 
-    /* Click pe dropzone -> deschide file picker */
+    //click pe dropzone -> deschide file picker
     dropzone.addEventListener('click', () => inputFile.click());
 
-    /* Drag over -> highlight */
+    //drag over -> highlight
     dropzone.addEventListener('dragover', (e) => {
         e.preventDefault();
         dropzone.classList.add('drag-over');
@@ -205,7 +166,7 @@ function initDropzone() {
         dropzone.classList.remove('drag-over');
     });
 
-    /* Drop -> proceseaza fisierul */
+    //drop -> proceseaza fisierul
     dropzone.addEventListener('drop', (e) => {
         e.preventDefault();
         dropzone.classList.remove('drag-over');
@@ -213,18 +174,14 @@ function initDropzone() {
         if (fisier) proceseazaFisier(fisier);
     });
 
-    /* File input change */
+    //file input change
     inputFile.addEventListener('change', () => {
         const fisier = inputFile.files[0];
         if (fisier) proceseazaFisier(fisier);
     });
 }
 
-/**
- * Citeste fisierul si il parseaza in functie de format.
- * Afiseaza preview dupa parsare reusita.
- * @param {File} fisier
- */
+//citeste fisierul si il parseaza in functie de format. Afiseaza preview dupa parsare reusita.
 function proceseazaFisier(fisier) {
     numeFisier = fisier.name;
     const reader = new FileReader();
@@ -249,17 +206,7 @@ function proceseazaFisier(fisier) {
     reader.readAsText(fisier, 'UTF-8');
 }
 
-/* =============================================
-   PARSARE FISIERE
-   ============================================= */
-
-/**
- * Parseaza continut CSV in array de obiecte.
- * Prima linie = header cu numele coloanelor.
- * Campuri obligatorii: name, category_id, quantity, min_threshold.
- * @param {string} text
- * @returns {Array<Object>}
- */
+//parseaza continut CSV in array de obiecte. Prima linie = header cu numele coloanelor. Campuri obligatorii: name, category_id, quantity, min_threshold.
 function parseazaCSV(text) {
     const linii = text.trim().split('\n').map(l => l.trim()).filter(l => l);
 
@@ -267,9 +214,9 @@ function parseazaCSV(text) {
         throw new Error('Fisierul CSV trebuie sa aiba cel putin un rand de date dupa header.');
     }
 
-    /* Prima linie = header */
+    //prima linie = header
     const header = linii[0].split(',').map(h => h.trim().toLowerCase().replace(/"/g, ''));
-    const campuriNecesare = ['name', 'category_id', 'quantity', 'min_threshold'];
+    const campuriNecesare = ['id', 'name', 'quantity', 'min_threshold', 'category_id'];
 
     campuriNecesare.forEach(camp => {
         if (!header.includes(camp)) {
@@ -278,12 +225,12 @@ function parseazaCSV(text) {
     });
 
     return linii.slice(1).map((linie, idx) => {
-        /* Parsam valorile tinand cont de ghilimele */
+        //parsam valorile tinand cont de ghilimele
         const valori = linie.split(',').map(v => v.trim().replace(/^"|"$/g, ''));
-        const obj    = {};
+        const obj = {};
         header.forEach((col, i) => { obj[col] = valori[i] || ''; });
 
-        /* Validare campuri obligatorii */
+        //validare campuri obligatorii
         if (!obj.name || obj.name.trim() === '') {
             throw new Error('Randul ' + (idx + 2) + ': campul "name" este gol.');
         }
@@ -301,12 +248,7 @@ function parseazaCSV(text) {
     });
 }
 
-/**
- * Parseaza continut JSON in array de obiecte.
- * Se asteapta un array la nivel de radacina.
- * @param {string} text
- * @returns {Array<Object>}
- */
+//parseaza continut JSON in array de obiecte. Se asteapta un array la nivel de radacina.
 function parseazaJSON(text) {
     let date;
     try {
@@ -322,55 +264,49 @@ function parseazaJSON(text) {
         throw new Error('Array-ul JSON este gol. Nu exista articole de importat.');
     }
 
-    /* Validam fiecare element */
+    //validam fiecare element
     date.forEach((obj, idx) => {
-        if (!obj.name)               throw new Error('Elementul ' + idx + ': campul "name" lipseste.');
-        if (obj.quantity == null)     throw new Error('Elementul ' + idx + ': campul "quantity" lipseste.');
-        if (obj.category_id == null)  throw new Error('Elementul ' + idx + ': campul "category_id" lipseste.');
+        if (!obj.name) throw new Error('Elementul ' + idx + ': campul "name" lipseste.');
+        if (obj.quantity == null) throw new Error('Elementul ' + idx + ': campul "quantity" lipseste.');
+        if (obj.category_id == null) throw new Error('Elementul ' + idx + ': campul "category_id" lipseste.');
         if (obj.min_threshold == null) throw new Error('Elementul ' + idx + ': campul "min_threshold" lipseste.');
     });
 
     return date;
 }
 
-/**
- * Parseaza continut XML in array de obiecte.
- * Foloseste DOMParser nativ al browserului.
- * Structura asteptata: <inventar><articol>...</articol></inventar>
- * Taguri suportate: <nume>, <categorie_id>, <cantitate>, <prag_minim>, <ultima_verificare>
- * @param {string} text
- * @returns {Array<Object>}
- */
+//parseaza continut XML in array de obiecte. Foloseste DOMParser nativ al browserului. Structura asteptata: <inventar><articol>...</articol></inventar> Taguri suportate: <nume>, <categorie_id>, <cantitate>, <prag_minim>, <ultima_verificare>
 function parseazaXML(text) {
-    /* Parsam XML-ul cu DOMParser nativ */
+    //parsam XML-ul cu DOMParser nativ
     const parser = new DOMParser();
-    const doc    = parser.parseFromString(text, 'application/xml');
+    const doc = parser.parseFromString(text, 'application/xml');
 
-    /* Verificam erori de parsare XML */
+    //verificam erori de parsare XML
     const eroareParser = doc.querySelector('parsererror');
     if (eroareParser) {
         throw new Error('XML invalid: ' + eroareParser.textContent.split('\n')[0]);
     }
 
-    /* Gasim toate elementele <articol> */
+    //gasim toate elementele <articol>
     const noduri = doc.querySelectorAll('articol');
     if (noduri.length === 0) {
         throw new Error('Nu s-au gasit elemente <articol> in fisierul XML.');
     }
 
-    /* Convertim fiecare nod XML intr-un obiect JS */
+    //convertim fiecare nod XML intr-un obiect JS
     const rezultate = [];
     noduri.forEach((nod, idx) => {
-        /* Citim textul din fiecare tag, cu fallback la string gol */
+        //citim textul din fiecare tag, cu fallback la string gol
         const getText = (tag) => (nod.querySelector(tag) || {}).textContent || '';
 
-        const name         = getText('nume').trim();
-        const category_id  = getText('categorie_id').trim();
-        const quantity     = getText('cantitate').trim();
+        const id = getText('id').trim();
+        const name = getText('nume').trim();
+        const category_id = getText('categorie_id').trim();
+        const quantity = getText('cantitate').trim();
         const min_threshold = getText('prag_minim').trim();
         const last_checked = getText('ultima_verificare').trim();
 
-        /* Validare campuri obligatorii */
+        //validare campuri obligatorii
         if (!name) {
             throw new Error('Articolul ' + (idx + 1) + ': tag-ul <nume> este gol sau lipseste.');
         }
@@ -385,57 +321,49 @@ function parseazaXML(text) {
         }
 
         rezultate.push({
+            id: id || null,
             name,
-            category_id:   category_id,
-            quantity:      quantity,
+            category_id: category_id,
+            quantity: quantity,
             min_threshold: min_threshold,
-            last_checked:  last_checked || null
+            last_checked: last_checked || null
         });
     });
 
     return rezultate;
 }
 
-/* =============================================
-   PREVIEW TABEL
-   ============================================= */
-
-/**
- * Afiseaza primele 10 randuri din fisierul parsat
- * intr-un tabel de preview inainte de import.
- * @param {Array<Object>} date
- * @param {string} numeFis
- */
+//afiseaza primele 10 randuri din fisierul parsat intr-un tabel de preview inainte de import.
 function afiseazaPreview(date, numeFis) {
-    const preview    = document.getElementById('import-preview');
-    const dropzone   = document.getElementById('dropzone');
+    const preview = document.getElementById('import-preview');
+    const dropzone = document.getElementById('dropzone');
     const countBadge = document.getElementById('preview-count');
-    const fileLabel  = document.getElementById('preview-filename');
-    const importNr   = document.getElementById('import-nr');
+    const fileLabel = document.getElementById('preview-filename');
+    const importNr = document.getElementById('import-nr');
 
-    /* Ascundem dropzone, afisam preview */
+    //ascundem dropzone, afisam preview
     dropzone.style.display = 'none';
-    preview.style.display  = 'block';
+    preview.style.display = 'block';
 
     countBadge.textContent = date.length + ' articole';
-    fileLabel.textContent  = numeFis;
-    importNr.textContent   = date.length;
+    fileLabel.textContent = numeFis;
+    importNr.textContent = date.length;
 
-    /* Construim tabelul de preview din cheile primului obiect */
-    const thead  = document.getElementById('thead-preview');
-    const tbody  = document.getElementById('tbody-preview');
+    //construim tabelul de preview din cheile primului obiect
+    const thead = document.getElementById('thead-preview');
+    const tbody = document.getElementById('tbody-preview');
     const coloane = Object.keys(date[0]);
 
     thead.innerHTML = '<tr>' + coloane.map(c => '<th>' + escapeHtml(c) + '</th>').join('') + '</tr>';
 
-    /* Afisam maxim 10 randuri */
+    //afisam maxim 10 randuri
     const primele10 = date.slice(0, 10);
     tbody.innerHTML = primele10.map(row => {
         const celule = coloane.map(c => '<td>' + escapeHtml(String(row[c] != null ? row[c] : '—')) + '</td>').join('');
         return '<tr>' + celule + '</tr>';
     }).join('');
 
-    /* Mesaj daca sunt mai multe */
+    //mesaj daca sunt mai multe
     if (date.length > 10) {
         tbody.innerHTML += `
             <tr>
@@ -446,9 +374,6 @@ function afiseazaPreview(date, numeFis) {
     }
 }
 
-/* =============================================
-   IMPORT — Confirmare si trimitere la API
-   ============================================= */
 function initImport() {
     document.getElementById('btn-reset-import').addEventListener('click', resetImport);
     document.getElementById('btn-import-confirm').addEventListener('click', confirmaImport);
@@ -457,43 +382,55 @@ function initImport() {
     });
 }
 
-/** Reseteaza starea importului la starea initiala */
+//reseteaza starea importului la starea initiala
 function resetImport() {
     dateImport = [];
     numeFisier = '';
     document.getElementById('import-preview').style.display = 'none';
-    document.getElementById('dropzone').style.display       = 'block';
-    document.getElementById('input-file').value             = '';
-    document.getElementById('card-log').style.display       = 'none';
+    document.getElementById('dropzone').style.display = 'block';
+    document.getElementById('input-file').value = '';
+    document.getElementById('card-log').style.display = 'none';
 }
 
-/**
- * Trimite fiecare articol parsat la API via POST asincron.
- * Afiseaza un log detaliat cu rezultatele importului.
- */
+//trimite fiecare articol parsat la API via POST asincron. Afiseaza un log detaliat cu rezultatele importului.
 async function confirmaImport() {
     if (dateImport.length === 0) return;
 
     const btn = document.getElementById('btn-import-confirm');
-    btn.disabled    = true;
+    btn.disabled = true;
     btn.textContent = 'Se importa...';
 
     const loguri = [];
-    let reusit   = 0;
-    let esuat    = 0;
+    let reusit = 0;
+    let esuat = 0;
 
-    /* Trimitem fiecare articol individual la API */
+    //trimitem fiecare articol individual la API
     for (let i = 0; i < dateImport.length; i++) {
         const art = dateImport[i];
         try {
-            await apiFetch('?request=items', 'POST', {
-                name:          String(art.name).trim(),
-                category_id:   Number(art.category_id),
-                quantity:      Number(art.quantity),
+            const payload = {
+                name: String(art.name).trim(),
+                category_id: Number(art.category_id),
+                quantity: Number(art.quantity),
                 min_threshold: Number(art.min_threshold),
-                last_checked:  art.last_checked || null
-            });
-            loguri.push({ ok: true,  index: i + 1, mesaj: escapeHtml(String(art.name)) + ' — importat cu succes' });
+                last_checked: art.last_checked || null
+            };
+
+            if (art.id && !isNaN(Number(art.id))) {
+                //incercam update existent
+                try {
+                    await apiFetch('?request=items/' + art.id, 'PUT', payload);
+                    loguri.push({ ok: true, index: i + 1, mesaj: escapeHtml(String(art.name)) + ' — actualizat cu succes' });
+                } catch (e) {
+                    //daca ID-ul nu a fost gasit in baza de date (ex: baza goala), adaugam ca articol nou
+                    await apiFetch('?request=items', 'POST', payload);
+                    loguri.push({ ok: true, index: i + 1, mesaj: escapeHtml(String(art.name)) + ' — importat ca articol nou' });
+                }
+            } else {
+                //adaugare nou
+                await apiFetch('?request=items', 'POST', payload);
+                loguri.push({ ok: true, index: i + 1, mesaj: escapeHtml(String(art.name)) + ' — importat cu succes' });
+            }
             reusit++;
         } catch (err) {
             loguri.push({ ok: false, index: i + 1, mesaj: escapeHtml(String(art.name)) + ' — ' + err.message });
@@ -501,10 +438,10 @@ async function confirmaImport() {
         }
     }
 
-    /* Afisam log-ul rezultatelor */
+    //afisam log-ul rezultatelor
     afiseazaLog(loguri, reusit, esuat);
 
-    btn.disabled    = false;
+    btn.disabled = false;
     btn.textContent = 'Importa ' + dateImport.length + ' articole';
 
     if (reusit > 0) {
@@ -516,12 +453,7 @@ async function confirmaImport() {
     }
 }
 
-/**
- * Afiseaza log-ul detaliat al importului (succese + erori).
- * @param {Array} loguri
- * @param {number} reusit
- * @param {number} esuat
- */
+//afiseaza log-ul detaliat al importului (succese + erori).
 function afiseazaLog(loguri, reusit, esuat) {
     const card = document.getElementById('card-log');
     const body = document.getElementById('log-body');
@@ -544,7 +476,7 @@ function afiseazaLog(loguri, reusit, esuat) {
     card.scrollIntoView({ behavior: 'smooth', block: 'start' });
 }
 
-/* ---------- Badge notificari in sidebar ---------- */
+//badge notificari in sidebar
 async function actualizeazaBadgeNotificari() {
     try {
         const notif = await apiFetch('?request=notifications');
@@ -552,8 +484,8 @@ async function actualizeazaBadgeNotificari() {
         if (!badge) return;
         const total = (notif.depletion || []).length + (notif.periodic || []).length;
         if (total > 0) {
-            badge.textContent   = total;
+            badge.textContent = total;
             badge.style.display = 'inline-flex';
         }
-    } catch (_) { /* ignoram eroarea — badge-ul ramane ascuns */ }
-}
+    } catch (_) { //ignoram eroarea — badge-ul ramane ascuns }
+    }

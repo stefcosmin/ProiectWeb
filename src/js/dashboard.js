@@ -1,13 +1,8 @@
-/* =============================================
-   StockPro — dashboard.js
-   Logica paginii principale: incarca stats,
-   articole recente, notificari, categorii
-   ============================================= */
 
 document.addEventListener('DOMContentLoaded', () => {
     incarcaDashboard();
 
-    /* Buton refresh */
+    //buton refresh
     const refreshBtn = document.getElementById('refresh-btn');
     if (refreshBtn) {
         refreshBtn.addEventListener('click', () => {
@@ -17,10 +12,10 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 });
 
-/* ---------- Incarcare date principale ---------- */
+//incarcare date principale
 async function incarcaDashboard() {
     try {
-        /* Apeluri paralele pentru performanta */
+        //apeluri paralele pentru performanta
         const [items, categories, notifications] = await Promise.all([
             apiFetch('?request=items'),
             apiFetch('?request=categories'),
@@ -39,37 +34,37 @@ async function incarcaDashboard() {
     }
 }
 
-/* ---------- Statistici (card-uri de sus) ---------- */
+//statistici (card-uri de sus)
 function afiseazaStats(items, categories, notifications) {
-    /* Total articole */
+    //total articole
     const elTotal = document.getElementById('val-total');
     if (elTotal) elTotal.textContent = items.length;
 
-    /* Total categorii */
+    //total categorii
     const elCat = document.getElementById('val-categorii');
     if (elCat) elCat.textContent = categories.length;
 
-    /* Articole cu stoc redus sau epuizat */
+    //articole cu stoc redus sau epuizat
     const stocMic = (items || []).filter(i => i.quantity <= i.min_threshold);
     const elStoc = document.getElementById('val-stoc-mic');
     if (elStoc) elStoc.textContent = stocMic.length;
 
-    /* Necesita verificare (periodic) */
+    //necesita verificare (periodic)
     const periodic = (notifications.periodic || []).length;
     const elVerif = document.getElementById('val-verificari');
     if (elVerif) elVerif.textContent = periodic;
 }
 
-/* ---------- Tabel articole recente ---------- */
+//tabel articole recente
 function afiseazaArticoleRecente(items, categories) {
     const tbody = document.getElementById('tbody-articole');
     if (!tbody) return;
 
-    /* Construim un map id -> name pentru categorii */
+    //construim un map id -> name pentru categorii
     const catMap = {};
     (categories || []).forEach(c => { catMap[c.id] = c.name; });
 
-    /* Luam ultimele 8 articole */
+    //luam ultimele 8 articole
     const recente = [...(items || [])].slice(-8).reverse();
 
     if (recente.length === 0) {
@@ -91,13 +86,13 @@ function afiseazaArticoleRecente(items, categories) {
     }).join('');
 }
 
-/* ---------- Alerte in panoul din dreapta ---------- */
+//alerte in panoul din dreapta
 function afiseazaAlerte(notifications) {
     const container = document.getElementById('lista-alerte');
     if (!container) return;
 
     const depletion = notifications.depletion || [];
-    const periodic  = notifications.periodic  || [];
+    const periodic = notifications.periodic || [];
 
     if (depletion.length === 0 && periodic.length === 0) {
         container.innerHTML = '<div class="no-alerts">Nu exista alerte active. Totul e in regula!</div>';
@@ -128,7 +123,7 @@ function afiseazaAlerte(notifications) {
     container.innerHTML = itemsHtml;
 }
 
-/* ---------- Grid categorii ---------- */
+//grid categorii
 function afiseazaCategorii(categories, items) {
     const grid = document.getElementById('categorii-grid');
     if (!grid) return;
@@ -138,7 +133,7 @@ function afiseazaCategorii(categories, items) {
         return;
     }
 
-    /* Numaram articole per categorie */
+    //numaram articole per categorie
     const countMap = {};
     (items || []).forEach(i => {
         countMap[i.category_id] = (countMap[i.category_id] || 0) + 1;
@@ -152,7 +147,7 @@ function afiseazaCategorii(categories, items) {
     `).join('');
 }
 
-/* ---------- Badge numar notificari in sidebar ---------- */
+//badge numar notificari in sidebar
 function actualizeazaBadgeNav(notifications) {
     const badge = document.getElementById('nav-badge');
     if (!badge) return;

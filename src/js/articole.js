@@ -1,7 +1,3 @@
-/* =============================================
-   StockPro — articole.js
-   Logica pentru pagina Articole: CRUD, filtrare, statistici
-   ============================================= */
 
 let itemsData = [];
 let categoriesData = [];
@@ -11,12 +7,12 @@ let currentDeleteId = null;
 document.addEventListener('DOMContentLoaded', () => {
     initApp();
 
-    /* Filtre */
+    //filtre
     document.getElementById('input-search').addEventListener('input', afiseazaTabel);
     document.getElementById('filter-categorie').addEventListener('change', afiseazaTabel);
     document.getElementById('filter-stare').addEventListener('change', afiseazaTabel);
 
-    /* Modals */
+    //modals
     document.getElementById('btn-adauga').addEventListener('click', openAddModal);
     document.getElementById('modal-close').addEventListener('click', closeAddModal);
     document.getElementById('btn-anuleaza').addEventListener('click', closeAddModal);
@@ -26,7 +22,7 @@ document.addEventListener('DOMContentLoaded', () => {
     document.getElementById('delete-anuleaza').addEventListener('click', closeDeleteModal);
     document.getElementById('delete-confirma').addEventListener('click', confirmDelete);
 
-    /* Close on overlay click */
+    //close on overlay click
     document.getElementById('modal-overlay').addEventListener('click', (e) => {
         if (e.target.id === 'modal-overlay') closeAddModal();
     });
@@ -150,8 +146,7 @@ function afiseazaTabel() {
     }).join('');
 }
 
-/* ---------- MODALS ---------- */
-
+//modals
 function clearErrors() {
     document.querySelectorAll('.form-error').forEach(e => e.textContent = '');
 }
@@ -201,8 +196,7 @@ function closeDeleteModal() {
     currentDeleteId = null;
 }
 
-/* ---------- CRUD ---------- */
-
+//crud
 async function saveItem() {
     clearErrors();
     const name = document.getElementById('input-nume').value.trim();
@@ -228,7 +222,7 @@ async function saveItem() {
         }
         closeAddModal();
 
-        // Refresh data
+        //reincarcam datele
         const [newItems, newNotif] = await Promise.all([
             apiFetch('?request=items'),
             apiFetch('?request=notifications')

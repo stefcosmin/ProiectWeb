@@ -96,6 +96,14 @@ class ItemController {
         }
         
         if (count($fields) > 0) {
+            $stmtCheck = $this->pdo->prepare('SELECT id FROM items WHERE id = ?');
+            $stmtCheck->execute([$id]);
+            if (!$stmtCheck->fetch()) {
+                http_response_code(404);
+                echo json_encode(['message' => 'Item not found']);
+                return;
+            }
+
             $params[] = $id;
             $sql = 'UPDATE items SET ' . implode(', ', $fields) . ' WHERE id = ?';
             $stmt = $this->pdo->prepare($sql);
@@ -114,8 +122,6 @@ class ItemController {
     }
 
     private function importItems() {
-        // Here you would process CSV, JSON, XML import and save to DB
-        // ... (can be implemented later based on exact requirements)
         http_response_code(501);
         echo json_encode(['message' => 'Not implemented yet']);
     }

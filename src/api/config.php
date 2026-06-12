@@ -1,5 +1,5 @@
 <?php
-$host = 'db'; // Numele serviciului din docker-compose
+$host = 'db'; //numele serviciului din docker-compose
 $db   = 'inventory_db';
 $user = 'user';
 $pass = 'password';
@@ -9,7 +9,7 @@ $dsn = "mysql:host=$host;dbname=$db;charset=$charset";
 $options = [
     PDO::ATTR_ERRMODE            => PDO::ERRMODE_EXCEPTION,
     PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC,
-    PDO::ATTR_EMULATE_PREPARES   => false, // Esențial pentru prevenirea SQL Injection
+    PDO::ATTR_EMULATE_PREPARES   => false, //esential pentru prevenirea SQL Injection
 ];
 
 try {

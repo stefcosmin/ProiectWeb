@@ -16,7 +16,7 @@
 
 <body>
 
-    <!-- ===== SIDEBAR ===== -->
+    <!--===== SIDEBAR =====-->
     <aside class="sidebar" id="sidebar">
         <div class="sidebar-logo">
             <span class="logo-icon">S</span>
@@ -82,7 +82,7 @@
         </div>
     </aside>
 
-    <!-- ===== MAIN CONTENT ===== -->
+    <!--===== MAIN CONTENT =====-->
     <main class="main-content">
 
         <header class="topbar">
@@ -101,7 +101,7 @@
 
         <div class="page-content">
 
-            <!-- ===== SECTIUNE EXPORT ===== -->
+            <!--===== SECTIUNE EXPORT =====-->
             <section class="card">
                 <div class="card-header">
                     <h2>
@@ -122,7 +122,7 @@
                     </p>
                     <div class="export-grid">
 
-                        <!-- CSV -->
+                        <!--cSV-->
                         <div class="export-card">
                             <div class="export-icon export-icon--green">
                                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
@@ -147,7 +147,7 @@
                             </button>
                         </div>
 
-                        <!-- JSON -->
+                        <!--jSON-->
                         <div class="export-card">
                             <div class="export-icon export-icon--blue">
                                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
@@ -170,7 +170,7 @@
                             </button>
                         </div>
 
-                        <!-- XML -->
+                        <!--xML-->
                         <div class="export-card">
                             <div class="export-icon export-icon--orange">
                                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
@@ -198,7 +198,7 @@
                 </div>
             </section>
 
-            <!-- ===== SECTIUNE IMPORT ===== -->
+            <!--===== SECTIUNE IMPORT =====-->
             <section class="card">
                 <div class="card-header">
                     <h2>
@@ -214,14 +214,14 @@
                 </div>
                 <div class="card-body">
 
-                    <!-- Tab-uri format -->
+                    <!--tab-uri format-->
                     <div class="import-tabs">
                         <button class="import-tab active" data-format="csv">CSV</button>
                         <button class="import-tab" data-format="json">JSON</button>
                         <button class="import-tab" data-format="xml">XML</button>
                     </div>
 
-                    <!-- Instructiuni CSV -->
+                    <!--instructiuni CSV-->
                     <div class="format-info" id="info-csv">
                         <strong>Format CSV asteptat (prima linie = header):</strong>
                         <code class="code-block">name,category_id,quantity,min_threshold,last_checked
@@ -230,7 +230,7 @@ Ulei motor 5W40,2,8,5,2026-03-20
 Toner imprimanta,3,2,3,</code>
                     </div>
 
-                    <!-- Instructiuni JSON -->
+                    <!--instructiuni JSON-->
                     <div class="format-info" id="info-json" style="display:none">
                         <strong>Format JSON asteptat (array de obiecte):</strong>
                         <code class="code-block">[
@@ -251,7 +251,7 @@ Toner imprimanta,3,2,3,</code>
 ]</code>
                     </div>
 
-                    <!-- Instructiuni XML -->
+                    <!--instructiuni XML-->
                     <div class="format-info" id="info-xml" style="display:none">
                         <strong>Format XML asteptat (element radacina: inventar):</strong>
                         <code class="code-block">&lt;?xml version="1.0" encoding="UTF-8"?&gt;
@@ -266,7 +266,7 @@ Toner imprimanta,3,2,3,</code>
 &lt;/inventar&gt;</code>
                     </div>
 
-                    <!-- Drop zone -->
+                    <!--drop zone-->
                     <div class="dropzone" id="dropzone">
                         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"
                             class="dropzone-icon">
@@ -280,7 +280,7 @@ Toner imprimanta,3,2,3,</code>
                         <input type="file" id="input-file" accept=".csv" style="display:none">
                     </div>
 
-                    <!-- Preview tabel -->
+                    <!--preview tabel-->
                     <div id="import-preview" style="display:none">
                         <div class="preview-header">
                             <div class="preview-info">
@@ -312,7 +312,7 @@ Toner imprimanta,3,2,3,</code>
                 </div>
             </section>
 
-            <!-- ===== LOG IMPORT ===== -->
+            <!--===== LOG IMPORT =====-->
             <section class="card" id="card-log" style="display:none">
                 <div class="card-header">
                     <h2>Rezultat import</h2>
@@ -325,7 +325,7 @@ Toner imprimanta,3,2,3,</code>
         </div>
     </main>
 
-    <!-- ===== TOAST ===== -->
+    <!--===== TOAST =====-->
     <div class="toast-container" id="toast-container" aria-live="polite"></div>
 
     <script src="js/app.js"></script>

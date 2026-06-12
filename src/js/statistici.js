@@ -1,28 +1,17 @@
-/* =============================================
-   StockPro — statistici.js
-   Grafice construite cu SVG pur (fara librarii):
-   - Bar chart: articole per categorie
-   - Donut chart: distributie stare stoc
-   - Top 10 articole cu stoc critic
-   - Raport complet per categorie
-   - Export PDF via window.print()
-   ============================================= */
-
-/* ---------- State local ---------- */
-let toateArticolele  = [];
+let toateArticolele = [];
 let toateCategoriile = [];
 
-/* ---------- Initializare ---------- */
+//init
 document.addEventListener('DOMContentLoaded', () => {
     incarcaDate();
 
-    /* Buton print / PDF */
+    //print pdf
     document.getElementById('btn-print').addEventListener('click', () => {
         window.print();
     });
 });
 
-/* ---------- Incarcare date ---------- */
+//incarcare date
 async function incarcaDate() {
     try {
         const [articole, categorii] = await Promise.all([
@@ -30,7 +19,7 @@ async function incarcaDate() {
             apiFetch('?request=categories')
         ]);
 
-        toateArticolele  = articole  || [];
+        toateArticolele = articole || [];
         toateCategoriile = categorii || [];
 
         afiseazaStats();
@@ -46,21 +35,19 @@ async function incarcaDate() {
     }
 }
 
-/* ---------- Statistici carduri ---------- */
+//stats carduri
 function afiseazaStats() {
-    document.getElementById('val-total').textContent     = toateArticolele.length;
+    document.getElementById('val-total').textContent = toateArticolele.length;
     document.getElementById('val-categorii').textContent = toateCategoriile.length;
-    document.getElementById('val-redus').textContent     = toateArticolele.filter(
+    document.getElementById('val-redus').textContent = toateArticolele.filter(
         a => a.quantity > 0 && a.quantity <= a.min_threshold
     ).length;
-    document.getElementById('val-epuizat').textContent   = toateArticolele.filter(
+    document.getElementById('val-epuizat').textContent = toateArticolele.filter(
         a => a.quantity <= 0
     ).length;
 }
 
-/* =============================================
-   BAR CHART — Articole per categorie
-   ============================================= */
+//chart
 function construiesteBarChart() {
     const container = document.getElementById('chart-categorii');
     if (!container) return;
@@ -70,25 +57,24 @@ function construiesteBarChart() {
         return;
     }
 
-    /* Numaram articole per categorie */
+    //numaram articole per categorie
     const countMap = {};
     toateArticolele.forEach(a => {
         countMap[a.category_id] = (countMap[a.category_id] || 0) + 1;
     });
 
-    /* Sortam descrescator dupa numar articole */
+    //sortam descrescator dupa numar articole
     const date = toateCategoriile
         .map(c => ({ name: c.name, count: countMap[c.id] || 0 }))
         .sort((a, b) => b.count - a.count)
-        .slice(0, 10); /* max 10 bare */
+        .slice(0, 10); //max 10 bare
 
     const max = Math.max(...date.map(d => d.count), 1);
 
-    /* Paleta de culori albastra */
     const culori = [
-        '#2563eb','#3b82f6','#60a5fa','#93c5fd',
-        '#1d4ed8','#4a86e8','#7cb3f5','#a8d0fb',
-        '#1e40af','#bfdbfe'
+        '#2563eb', '#3b82f6', '#60a5fa', '#93c5fd',
+        '#1d4ed8', '#4a86e8', '#7cb3f5', '#a8d0fb',
+        '#1e40af', '#bfdbfe'
     ];
 
     const bari = date.map((d, i) => {
@@ -109,17 +95,15 @@ function construiesteBarChart() {
     container.innerHTML = '<div class="bar-chart">' + bari + '</div>';
 }
 
-/* =============================================
-   DONUT CHART — Distributie stare stoc
-   ============================================= */
+//donut chart
 function construiesteDonut() {
     const container = document.getElementById('chart-stare');
     if (!container) return;
 
-    const ok      = toateArticolele.filter(a => a.quantity > a.min_threshold).length;
-    const redus   = toateArticolele.filter(a => a.quantity > 0 && a.quantity <= a.min_threshold).length;
+    const ok = toateArticolele.filter(a => a.quantity > a.min_threshold).length;
+    const redus = toateArticolele.filter(a => a.quantity > 0 && a.quantity <= a.min_threshold).length;
     const epuizat = toateArticolele.filter(a => a.quantity <= 0).length;
-    const total   = toateArticolele.length;
+    const total = toateArticolele.length;
 
     if (total === 0) {
         container.innerHTML = '<div class="empty-state"><p>Nu există articole de afișat.</p></div>';
@@ -127,23 +111,23 @@ function construiesteDonut() {
     }
 
     const segmente = [
-        { label: 'OK',         valoare: ok,      culoare: '#22c55e' },
-        { label: 'Stoc redus', valoare: redus,   culoare: '#f59e0b' },
-        { label: 'Epuizat',    valoare: epuizat, culoare: '#ef4444' }
+        { label: 'OK', valoare: ok, culoare: '#22c55e' },
+        { label: 'Stoc redus', valoare: redus, culoare: '#f59e0b' },
+        { label: 'Epuizat', valoare: epuizat, culoare: '#ef4444' }
     ].filter(s => s.valoare > 0);
 
-    /* Construim SVG donut */
-    const raza       = 60;
+    //svg donut
+    const raza = 60;
     const razaIntern = 38;
-    const cx         = 80;
-    const cy         = 80;
-    let unghi        = -90; /* porneste de sus */
+    const cx = 80;
+    const cy = 80;
+    let unghi = -90;
 
     const pathuri = segmente.map(seg => {
-        const procent  = seg.valoare / total;
-        const grade    = procent * 360;
+        const procent = seg.valoare / total;
+        const grade = procent * 360;
         const radStart = (unghi * Math.PI) / 180;
-        const radEnd   = ((unghi + grade) * Math.PI) / 180;
+        const radEnd = ((unghi + grade) * Math.PI) / 180;
 
         const x1 = cx + raza * Math.cos(radStart);
         const y1 = cy + raza * Math.sin(radStart);
@@ -169,7 +153,7 @@ function construiesteDonut() {
         return `<path d="${d}" fill="${seg.culoare}" opacity="0.9"/>`;
     }).join('');
 
-    /* Text central */
+    //text central
     const svgCentru = `<text x="${cx}" y="${cy - 6}" text-anchor="middle" font-size="22" font-weight="600" fill="#111" font-family="DM Mono, monospace">${total}</text>
         <text x="${cx}" y="${cy + 12}" text-anchor="middle" font-size="10" fill="#80868b" font-family="DM Sans, sans-serif">articole</text>`;
 
@@ -179,7 +163,7 @@ function construiesteDonut() {
             ${svgCentru}
         </svg>`;
 
-    /* Legenda */
+    //legenda
     const legenda = segmente.map(seg => `
         <div class="legend-item">
             <div class="legend-dot" style="background:${seg.culoare}"></div>
@@ -195,9 +179,7 @@ function construiesteDonut() {
         </div>`;
 }
 
-/* =============================================
-   TOP 10 — Articole cu stoc critic
-   ============================================= */
+//top 10 ARTICOLE STOC CRITIC
 function afiseazaTopStoc() {
     const tbody = document.getElementById('tbody-top-stoc');
     if (!tbody) return;
@@ -205,7 +187,7 @@ function afiseazaTopStoc() {
     const catMap = {};
     toateCategoriile.forEach(c => { catMap[c.id] = c.name; });
 
-    /* Sortam dupa diferenta cantitate - prag (cele mai critice primele) */
+    //sortam dupa diferenta cantitate - prag (cele mai critice primele)
     const sortate = [...toateArticolele]
         .sort((a, b) => (a.quantity - a.min_threshold) - (b.quantity - b.min_threshold))
         .slice(0, 10);
@@ -216,17 +198,17 @@ function afiseazaTopStoc() {
     }
 
     tbody.innerHTML = sortate.map((art, i) => {
-        const stare    = getStareBadge(art.quantity, art.min_threshold);
-        const catName  = escapeHtml(catMap[art.category_id] || '—');
+        const stare = getStareBadge(art.quantity, art.min_threshold);
+        const catName = escapeHtml(catMap[art.category_id] || '—');
 
-        /* Bara de nivel stoc */
+        //bara de nivel stoc
         const procent = art.min_threshold > 0
             ? Math.min(Math.round((art.quantity / art.min_threshold) * 100), 100)
             : 100;
 
         let culoareBara = '#22c55e';
-        if (art.quantity <= 0)                             culoareBara = '#ef4444';
-        else if (art.quantity <= art.min_threshold)        culoareBara = '#f59e0b';
+        if (art.quantity <= 0) culoareBara = '#ef4444';
+        else if (art.quantity <= art.min_threshold) culoareBara = '#f59e0b';
 
         return `
             <tr>
@@ -250,9 +232,7 @@ function afiseazaTopStoc() {
     }).join('');
 }
 
-/* =============================================
-   RAPORT COMPLET — Per categorie
-   ============================================= */
+//raport complet per categorie
 function afiseazaRaportCategorii() {
     const tbody = document.getElementById('tbody-raport-categorii');
     if (!tbody) return;
@@ -263,10 +243,10 @@ function afiseazaRaportCategorii() {
     }
 
     tbody.innerHTML = toateCategoriile.map(cat => {
-        const artCat   = toateArticolele.filter(a => a.category_id === cat.id);
-        const total    = artCat.length;
-        const stocTot  = artCat.reduce((s, a) => s + Number(a.quantity), 0);
-        const reduse   = artCat.filter(a => a.quantity > 0 && a.quantity <= a.min_threshold).length;
+        const artCat = toateArticolele.filter(a => a.category_id === cat.id);
+        const total = artCat.length;
+        const stocTot = artCat.reduce((s, a) => s + Number(a.quantity), 0);
+        const reduse = artCat.filter(a => a.quantity > 0 && a.quantity <= a.min_threshold).length;
         const epuizate = artCat.filter(a => a.quantity <= 0).length;
 
         return `
@@ -276,20 +256,20 @@ function afiseazaRaportCategorii() {
                 <td style="font-family:var(--font-mono)">${stocTot}</td>
                 <td>
                     ${reduse > 0
-                        ? `<span class="badge badge--warning">${reduse}</span>`
-                        : '<span style="color:var(--gray-300)">—</span>'}
+                ? `<span class="badge badge--warning">${reduse}</span>`
+                : '<span style="color:var(--gray-300)">—</span>'}
                 </td>
                 <td>
                     ${epuizate > 0
-                        ? `<span class="badge badge--danger">${epuizate}</span>`
-                        : '<span style="color:var(--gray-300)">—</span>'}
+                ? `<span class="badge badge--danger">${epuizate}</span>`
+                : '<span style="color:var(--gray-300)">—</span>'}
                 </td>
             </tr>
         `;
     }).join('');
 }
 
-/* ---------- Badge notificari ---------- */
+//badge notificari
 async function actualizeazaBadgeNotificari() {
     try {
         const notif = await apiFetch('?request=notifications');
@@ -300,5 +280,5 @@ async function actualizeazaBadgeNotificari() {
             badge.textContent = total;
             badge.style.display = 'inline-flex';
         }
-    } catch (_) { /* ignoram */ }
+    } catch (_) { //ignoram }
 }

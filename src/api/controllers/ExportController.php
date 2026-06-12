@@ -15,7 +15,7 @@ class ExportController {
         }
 
         $stmt = $this->pdo->query('
-            SELECT i.id, i.name, i.quantity, i.min_threshold, i.last_checked, c.name as category_name 
+            SELECT i.id, i.name, i.quantity, i.min_threshold, i.last_checked, i.category_id, c.name as category_name 
             FROM items i 
             LEFT JOIN categories c ON i.category_id = c.id
         ');
@@ -91,7 +91,7 @@ class ExportController {
             }
         }
         echo '</table>';
-        echo '<button onclick="window.print()">Print / Save as PDF</button>'; // Simplu hack pentru PDF client-side
+        echo '<button onclick="window.print()">Print / Save as PDF</button>'; //simplu hack pentru PDF client-side
         echo '</body></html>';
     }
 }
