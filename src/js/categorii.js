@@ -330,6 +330,6 @@ async function actualizeazaBadgeNotificari() {
             badge.style.display = 'inline-flex';
         }
     } catch (_) {
-        //ignoram eroarea - badge-ul ramane ascuns
+        /*ignoram eroarea - badge-ul ramane ascuns*/
     }
 }

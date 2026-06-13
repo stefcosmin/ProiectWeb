@@ -280,5 +280,5 @@ async function actualizeazaBadgeNotificari() {
             badge.textContent = total;
             badge.style.display = 'inline-flex';
         }
-    } catch (_) { //ignoram }
+    } catch (_) { /* ignoram */ }
 }

@@ -487,5 +487,5 @@ async function actualizeazaBadgeNotificari() {
             badge.textContent = total;
             badge.style.display = 'inline-flex';
         }
-    } catch (_) { //ignoram eroarea — badge-ul ramane ascuns }
-    }
+    } catch (_) { /*ignoram eroarea — badge-ul ramane ascuns*/ }
+}
